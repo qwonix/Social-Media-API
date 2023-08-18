@@ -37,14 +37,14 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_ReturnValidToken() throws Exception {
+    void handleRegister_ReturnSuccess() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                            "username": "user4",
-                            "email": "user4@example.com",
-                            "password": "password4"
+                            "username": "user2",
+                            "email": "user2@example.com",
+                            "password": "password2"
                         }
                         """);
 
@@ -53,4 +53,172 @@ class AuthenticationControllerIT {
         );
     }
 
+    @Test
+    void handleRegister_DuplicateUsername_ReturnConflict() throws Exception {
+        var requestBuilder = post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "username": "user1",
+                            "email": "user2@example.com",
+                            "password": "password2"
+                        }
+                        """);
+
+        mockMvc.perform(requestBuilder).andExpectAll(
+                status().isConflict(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                          "errorMessages": [
+                            {
+                              "field": "username",
+                              "message": "username already exists"
+                            }
+                          ]
+                        }
+                        """)
+        );
+    }
+
+    @Test
+    void handleRegister_DuplicateEmail_ReturnConflict() throws Exception {
+        var requestBuilder = post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "username": "user2",
+                            "email": "user1@example.com",
+                            "password": "password2"
+                        }
+                        """);
+
+        mockMvc.perform(requestBuilder).andExpectAll(
+                status().isConflict(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                          "errorMessages": [
+                            {
+                              "field": "email",
+                              "message": "email already exists"
+                            }
+                          ]
+                        }
+                        """)
+        );
+    }
+
+
+    @Test
+    void handleRegister_EmailValidationError_ReturnErrorMessage() throws Exception {
+        var requestBuilder = post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "username": "user2",
+                            "email": "user2example.com",
+                            "password": "password2"
+                        }
+                        """);
+
+        mockMvc.perform(requestBuilder).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                           "errorMessages": [
+                             {
+                               "field": "email",
+                               "message": "must be a well-formed email address"
+                             }
+                           ]
+                        }
+                        """)
+        );
+    }
+
+    @Test
+    void handleRegister_UsernameShorterThanShouldBe_ReturnErrorMessage() throws Exception {
+        var requestBuilder = post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "username": "u",
+                            "email": "user2@example.com",
+                            "password": "password2"
+                        }
+                        """);
+
+        mockMvc.perform(requestBuilder).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                           "errorMessages": [
+                             {
+                               "field": "username",
+                               "message": "username must be longer than 3 and shorter than 20 characters"
+                             }
+                           ]
+                         }
+                        """)
+        );
+    }
+
+    @Test
+    void handleRegister_UsernameLongerThanShouldBe_ReturnErrorMessage() throws Exception {
+        var requestBuilder = post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuser",
+                            "email": "user2@example.com",
+                            "password": "password2"
+                        }
+                        """);
+
+        mockMvc.perform(requestBuilder).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                           "errorMessages": [
+                             {
+                               "field": "username",
+                               "message": "username must be longer than 3 and shorter than 20 characters"
+                             }
+                           ]
+                        }
+                        """)
+        );
+    }
+
+    @Test
+    void handleRegister_PasswordIsShorterThanShouldBe_ReturnErrorMessage() throws Exception {
+        var requestBuilder = post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "username": "user2",
+                            "email": "user2@example.com",
+                            "password": "2"
+                        }
+                        """);
+
+        mockMvc.perform(requestBuilder).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                           "errorMessages": [
+                             {
+                               "field": "password",
+                               "message": "password should have at least 8 characters"
+                             }
+                           ]
+                        }
+                        """)
+        );
+    }
 }

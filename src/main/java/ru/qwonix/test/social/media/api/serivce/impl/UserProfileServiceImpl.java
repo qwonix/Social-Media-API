@@ -17,12 +17,25 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     @Override
-    public void register(UserProfile user) {
+    public UserProfile register(UserProfile user) {
         var encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPasswordHash(encodedPassword);
         user.setRole(Role.USER);
         userProfileRepository.save(user);
+
+        return userProfileRepository.save(user);
+    }
+
+    @Override
+    public Boolean existsByUsername(String username) {
+        return userProfileRepository.existsByUsername(username);
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return userProfileRepository.existsByEmail(email);
     }
 
     @Override

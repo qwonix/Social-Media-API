@@ -6,5 +6,9 @@ import ru.qwonix.test.social.media.api.entity.UserProfile;
 
 public interface UserProfileService extends UserDetailsService {
 
-    void register(UserProfile user);
+    UserProfile register(UserProfile user);
+
+    Boolean existsByUsername(String username);
+
+    Boolean existsByEmail(String username);
 }

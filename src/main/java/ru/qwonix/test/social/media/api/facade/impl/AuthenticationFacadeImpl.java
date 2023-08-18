@@ -23,6 +23,14 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
 
     @Override
     public RegisterUserEntries.Result registerUser(UserRegistrationDto registrationDto) {
+        String username = registrationDto.username();
+        if (Boolean.TRUE.equals(userDetailsService.existsByUsername(username))) {
+            return RegisterUserEntries.Result.UsernameAlreadyExists.INSTANCE;
+        }
+        String email = registrationDto.email();
+        if (Boolean.TRUE.equals(userDetailsService.existsByEmail(email))) {
+            return RegisterUserEntries.Result.EmailAlreadyExists.INSTANCE;
+        }
         UserProfile user = userProfileMapper.map(registrationDto);
         userDetailsService.register(user);
         return RegisterUserEntries.Result.Success.INSTANCE;
