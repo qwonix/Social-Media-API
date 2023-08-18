@@ -3,6 +3,7 @@ package ru.qwonix.test.social.media.api.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
 import ru.qwonix.test.social.media.api.serivce.impl.AuthenticationServiceImpl;
 
@@ -23,7 +25,9 @@ import java.time.Duration;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtConfigurer jwtConfigurer) throws Exception {
+        http.apply(jwtConfigurer);
+
         http
                 .httpBasic(Customizer.withDefaults())
                 // fixme: not good
@@ -51,6 +55,12 @@ public class SecurityConfig {
         var authenticationService = new AuthenticationServiceImpl(accessJwtSecret);
         authenticationService.setAccessTokenTtl(accessTtl);
         return authenticationService;
+    }
+
+    @Bean
+    public JwtConfigurer jwtConfigurer(AuthenticationService authenticationService) {
+        return new JwtConfigurer(authenticationService)
+                .authenticationRequestMatcher(new AntPathRequestMatcher("/api/v1/auth", HttpMethod.POST.name()));
     }
 
     @Bean

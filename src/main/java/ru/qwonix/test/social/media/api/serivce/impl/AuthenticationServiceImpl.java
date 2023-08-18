@@ -50,6 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .compact();
     }
 
+    @Override
     public Token getAccessToken(String token) throws
             ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, io.jsonwebtoken.security.SignatureException, IllegalArgumentException {
         return getToken(token, accessJwtKey);
