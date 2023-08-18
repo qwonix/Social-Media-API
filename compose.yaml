@@ -1,0 +1,16 @@
+services:
+  bd:
+    image: 'postgres:15'
+    container_name: social-media-api-database
+    restart: always
+    environment:
+      POSTGRES_DB: social_media_api
+      POSTGRES_USER: qwonix
+      POSTGRES_PASSWORD: qwonix_secret
+    ports:
+      - "5430:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

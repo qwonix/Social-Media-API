@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+jwt:
+  secret:
+    access: h9dHOdBnBQ2AVk5dX8wV3zXoxBwnlhk5P4gEQXyS5SOqqrmLI8odYKxdKwJg6FNUREFE3khJVtKHigcQWRp/aA==
+
+  ttl:
+    access: 1h
+
+logging:
+  level:
+    org.springframework.security: trace
