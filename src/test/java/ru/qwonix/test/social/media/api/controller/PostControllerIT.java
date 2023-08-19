@@ -1,32 +1,31 @@
 package ru.qwonix.test.social.media.api.controller;
 
-import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import ru.qwonix.test.social.media.api.TestcontainersConfiguration;
-import ru.qwonix.test.social.media.api.entity.Post;
 import ru.qwonix.test.social.media.api.entity.Role;
-import ru.qwonix.test.social.media.api.entity.UserProfile;
-import ru.qwonix.test.social.media.api.repository.PostRepository;
-import ru.qwonix.test.social.media.api.repository.UserProfileRepository;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Sql("/sql/post_rest_controller/test_data.sql")
+@Transactional
 @SpringBootTest(classes = TestcontainersConfiguration.class)
 @AutoConfigureMockMvc
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PostControllerIT {
+
+    private static final String POST_1_ID = "ecad0472-f529-4daa-afde-cd539ebc9391";
+    private static final String POST_2_ID = "87dbb176-217f-4b68-b6c4-126affcc9a47";
 
     @Autowired
     MockMvc mockMvc;
@@ -35,56 +34,18 @@ class PostControllerIT {
     AuthenticationService authenticationService;
 
     @Autowired
-    PostRepository postRepository;
-
-    @Autowired
-    UserProfileRepository userProfileRepository;
-
-    @Autowired
     PasswordEncoder passwordEncoder;
 
     private String token;
 
     @BeforeEach
-    void setUpData() {
-        var user1 = userProfileRepository.save(UserProfile.builder()
-                .username("user1")
-                .email("user1@example.com")
-                .passwordHash(passwordEncoder.encode("password1"))
-                .role(Role.USER)
-                .build());
-
-        var user2 = userProfileRepository.save(UserProfile.builder()
-                .username("user2")
-                .email("user2@example.com")
-                .passwordHash(passwordEncoder.encode("password2"))
-                .role(Role.USER)
-                .build());
-
-        postRepository.save(Post.builder()
-                .id(1L)
-                .title("Lorem ipsum")
-                .text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non erat at velit fermentum semper.")
-                .user(user1)
-                .build());
-
-        postRepository.save(Post.builder()
-                .id(2L)
-                .title("Class aptent")
-                .text("Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.")
-                .user(user2)
-                .build());
-    }
-
-    @BeforeEach
     void setUpToken() {
         token = authenticationService.generateToken("user1", Role.USER.getAuthorities());
-
     }
 
     @Test
     void handleGet_ReturnValidResponse() throws Exception {
-        var requestBuilder = get("/api/v1/post/1")
+        var requestBuilder = get("/api/v1/post/" + POST_1_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -92,20 +53,21 @@ class PostControllerIT {
                 content().contentType(MediaType.APPLICATION_JSON),
                 content().json("""
                         {
-                          "id": 1,
+                          "id": "%s",
                           "title": "Lorem ipsum",
                           "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non erat at velit fermentum semper.",
+                          "createdAt" : "2023-08-19T12:00:00",
                           "owner": {
                             "username": "user1"
                           }
                         }
-                        """)
+                        """.formatted(POST_1_ID))
         );
     }
 
     @Test
     void handleGet_OtherUsersPost_ReturnValidResponse() throws Exception {
-        var requestBuilder = get("/api/v1/post/2")
+        var requestBuilder = get("/api/v1/post/" + POST_2_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -113,20 +75,21 @@ class PostControllerIT {
                 content().contentType(MediaType.APPLICATION_JSON),
                 content().json("""
                         {
-                          "id": 2,
+                          "id": %s,
                           "title": "Class aptent",
                           "text": "Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.",
+                          "createdAt" : "2023-08-19T13:00:00",
                           "owner": {
                             "username": "user2"
                           }
                         }
-                        """)
+                        """.formatted(POST_2_ID))
         );
     }
 
     @Test
     void handleGet_IdIsInvalid_ReturnNotFound() throws Exception {
-        var requestBuilder = get("/api/v1/post/100")
+        var requestBuilder = get("/api/v1/post/f3ec24d6-0597-4241-af31-ea524c65c333")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -141,13 +104,8 @@ class PostControllerIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                             "id": 3,
                              "title": "New Title",
-                             "text": "New Text about Spring",
-                             "createdAt": null,
-                             "owner": {
-                                 "username": "user1"
-                             }
+                             "text": "New Text about Spring"
                          }
                         """);
 
@@ -156,16 +114,11 @@ class PostControllerIT {
                 status().isCreated(),
                 header().exists(HttpHeaders.LOCATION),
                 content().contentType(MediaType.APPLICATION_JSON),
-                content().json("""
-                        {
-                            "id": 3,
-                            "title": "New Title",
-                            "text": "New Text about Spring",
-                            "owner": {
-                                "username": "user1"
-                            }
-                        }
-                        """)
+                jsonPath("$.id").isString(),
+                jsonPath("$.title").value("New Title"),
+                jsonPath("$.text").value("New Text about Spring"),
+                jsonPath("$.createdAt").isString(),
+                jsonPath("$.owner.username").value("user1")
         );
     }
 
@@ -200,7 +153,7 @@ class PostControllerIT {
 
     @Test
     void handleUpdate_NewTitle_ReturnValidResponse() throws Exception {
-        var requestBuilder = patch("/api/v1/post/1")
+        var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -215,21 +168,21 @@ class PostControllerIT {
                 content().contentType(MediaType.APPLICATION_JSON),
                 content().json("""
                         {
-                            "id": 1,
+                            "id": "%s",
                             "title": "New Title For 1",
                             "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non erat at velit fermentum semper.",
+                            "createdAt" : "2023-08-19T12:00:00",
                             "owner": {
                                 "username": "user1"
                             }
                         }
-                                                
-                        """)
+                        """.formatted(POST_1_ID))
         );
     }
 
     @Test
     void handleUpdate_TitleIsTooLong_ReturnErrorMessage() throws Exception {
-        var requestBuilder = patch("/api/v1/post/1")
+        var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -257,7 +210,7 @@ class PostControllerIT {
 
     @Test
     void handleUpdate_NewText_ReturnValidResponse() throws Exception {
-        var requestBuilder = patch("/api/v1/post/1")
+        var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -272,20 +225,21 @@ class PostControllerIT {
                 content().contentType(MediaType.APPLICATION_JSON),
                 content().json("""
                         {
-                            "id": 1,
+                            "id": "%s",
                             "title": "Lorem ipsum",
                             "text": "New Text For 1",
+                            "createdAt" : "2023-08-19T12:00:00",
                             "owner": {
                                 "username": "user1"
                             }
                         }
-                        """)
+                        """.formatted(POST_1_ID))
         );
     }
 
     @Test
     void handleUpdate_NewTitleAndText_ReturnValidResponse() throws Exception {
-        var requestBuilder = patch("/api/v1/post/1")
+        var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -301,20 +255,22 @@ class PostControllerIT {
                 content().contentType(MediaType.APPLICATION_JSON),
                 content().json("""
                         {
-                          "id": 1,
-                          "title": "New Title For 1",
-                          "text": "New Text For 1",
-                          "owner": {
-                            "username": "user1"
-                          }
+                             "id": "%s",
+                             "title": "New Title For 1",
+                             "text": "New Text For 1",
+                             "createdAt" : "2023-08-19T12:00:00",
+                             "owner": {
+                                 "username": "user1"
+                             }
                         }
-                        """)
+                        """.formatted(POST_1_ID))
+
         );
     }
 
     @Test
     void handleUpdate_OtherUsersPost_ReturnErrorMessage() throws Exception {
-        var requestBuilder = patch("/api/v1/post/2")
+        var requestBuilder = patch("/api/v1/post/" + POST_2_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -332,7 +288,7 @@ class PostControllerIT {
 
     @Test
     void handleDelete_ReturnSuccess() throws Exception {
-        var requestBuilder = delete("/api/v1/post/1")
+        var requestBuilder = delete("/api/v1/post/" + POST_1_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -342,7 +298,7 @@ class PostControllerIT {
 
     @Test
     void handleDelete_OtherUsersPost_ReturnErrorMessage() throws Exception {
-        var requestBuilder = delete("/api/v1/post/2")
+        var requestBuilder = delete("/api/v1/post/" + POST_2_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(

@@ -18,6 +18,7 @@ public interface PostMapper {
     @Mapping(target = "text", source = "postCreateDto.text")
     Post map(PostCreateDto postCreateDto);
 
+    @Mapping(target = "createdAt", dateFormat = "yyyy-MM-dd'T'HH:mm:ss")
     @Mapping(target = "owner", source = "post.user")
     PostResponseDto map(Post post);
 }

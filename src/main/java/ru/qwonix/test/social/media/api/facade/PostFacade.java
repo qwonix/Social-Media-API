@@ -7,12 +7,14 @@ import ru.qwonix.test.social.media.api.result.DeletePostEntries;
 import ru.qwonix.test.social.media.api.result.FindPostEntries;
 import ru.qwonix.test.social.media.api.result.UpdatePostEntries;
 
+import java.util.UUID;
+
 public interface PostFacade {
     CreatePostEntries.Result create(PostCreateDto postCreateDto, String username);
 
-    UpdatePostEntries.Result update(Long id, PostUpdateDto postUpdateDto);
+    UpdatePostEntries.Result update(UUID id, PostUpdateDto postUpdateDto);
 
-    DeletePostEntries.Result delete(Long id);
+    DeletePostEntries.Result delete(UUID id);
 
-    FindPostEntries.Result find(Long id);
+    FindPostEntries.Result find(UUID id);
 }

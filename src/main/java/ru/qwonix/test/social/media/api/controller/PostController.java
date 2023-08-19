@@ -20,6 +20,7 @@ import ru.qwonix.test.social.media.api.result.FindPostEntries;
 import ru.qwonix.test.social.media.api.result.UpdatePostEntries;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -31,7 +32,7 @@ public class PostController {
     private final AuthorizationFacadeImpl authorizationFacade;
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponseDto> get(@PathVariable("id") Long id) {
+    public ResponseEntity<PostResponseDto> get(@PathVariable("id") UUID id) {
         log.debug("Get post with id {}", id);
         var result = postFacade.find(id);
         if (result instanceof FindPostEntries.Result.NotFound) {
@@ -60,7 +61,7 @@ public class PostController {
 
     @PreAuthorize("@authorizationFacadeImpl.isPostOwner(#id, authentication.name)")
     @PatchMapping("/{id}")
-    public ResponseEntity<PostResponseDto> update(@PathVariable("id") Long id,
+    public ResponseEntity<PostResponseDto> update(@PathVariable("id") UUID id,
                                                   @RequestBody @Valid PostUpdateDto postUpdateDto) {
         log.debug("Post update request id {}", id);
         var result = postFacade.update(id, postUpdateDto);
@@ -74,7 +75,7 @@ public class PostController {
 
     @PreAuthorize("@authorizationFacadeImpl.isPostOwner(#id, authentication.name)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<?> delete(@PathVariable("id") UUID id) {
         log.debug("Post delete request id {}", id);
         var result = postFacade.delete(id);
         if (result instanceof DeletePostEntries.Result.NotFound) {

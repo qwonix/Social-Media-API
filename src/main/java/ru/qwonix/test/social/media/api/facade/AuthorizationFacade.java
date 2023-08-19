@@ -1,7 +1,9 @@
 package ru.qwonix.test.social.media.api.facade;
 
 
+import java.util.UUID;
+
 public interface AuthorizationFacade {
 
-    Boolean isPostOwner(Long postId, String username);
+    Boolean isPostOwner(UUID postId, String username);
 }

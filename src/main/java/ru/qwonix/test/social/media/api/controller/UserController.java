@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.qwonix.test.social.media.api.dto.FullUserProfileResponseDto;
 import ru.qwonix.test.social.media.api.facade.UserProfileFacade;
 import ru.qwonix.test.social.media.api.result.FindFullUserProfileEntries;
 import ru.qwonix.test.social.media.api.result.FindPublicUserProfileEntries;

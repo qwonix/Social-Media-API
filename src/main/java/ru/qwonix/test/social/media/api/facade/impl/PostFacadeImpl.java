@@ -13,6 +13,8 @@ import ru.qwonix.test.social.media.api.result.UpdatePostEntries;
 import ru.qwonix.test.social.media.api.serivce.PostService;
 import ru.qwonix.test.social.media.api.serivce.UserProfileService;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Component
 public class PostFacadeImpl implements PostFacade {
@@ -38,7 +40,7 @@ public class PostFacadeImpl implements PostFacade {
     }
 
     @Override
-    public UpdatePostEntries.Result update(Long id, PostUpdateDto postUpdateDto) {
+    public UpdatePostEntries.Result update(UUID id, PostUpdateDto postUpdateDto) {
         var optionalPost = postService.findById(id);
         if (optionalPost.isPresent()) {
             var post = optionalPost.get();
@@ -59,7 +61,7 @@ public class PostFacadeImpl implements PostFacade {
     }
 
     @Override
-    public DeletePostEntries.Result delete(Long id) {
+    public DeletePostEntries.Result delete(UUID id) {
         if (Boolean.FALSE.equals(postService.existsById(id))) {
             return DeletePostEntries.Result.NotFound.INSTANCE;
         }
@@ -69,7 +71,7 @@ public class PostFacadeImpl implements PostFacade {
     }
 
     @Override
-    public FindPostEntries.Result find(Long id) {
+    public FindPostEntries.Result find(UUID id) {
         var optionalPost = postService.findById(id);
 
         if (optionalPost.isPresent()) {

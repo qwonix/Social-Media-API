@@ -9,7 +9,7 @@ CREATE TABLE user_profile
 
 CREATE TABLE post
 (
-    post_id    BIGSERIAL PRIMARY KEY,
+    id    UUID PRIMARY KEY,
     user_id    UUID REFERENCES user_profile,
     title      VARCHAR(100),
     text       TEXT,
@@ -42,6 +42,6 @@ CREATE TABLE image
 create table post_image
 (
     image_name VARCHAR(255) REFERENCES image,
-    post_id    BIGINT REFERENCES post,
+    post_id    UUID REFERENCES post,
     PRIMARY KEY (image_name, post_id)
 );

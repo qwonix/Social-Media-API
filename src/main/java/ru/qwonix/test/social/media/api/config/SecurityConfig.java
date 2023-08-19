@@ -23,6 +23,7 @@ import java.time.Duration;
 
 @Configuration
 @EnableMethodSecurity(
+        prePostEnabled = true,
         securedEnabled = true,
         jsr250Enabled = true)
 @EnableWebSecurity(debug = true)

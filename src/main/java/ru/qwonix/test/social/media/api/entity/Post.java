@@ -10,6 +10,7 @@ import org.hibernate.annotations.SourceType;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @Data
@@ -22,9 +23,9 @@ import java.util.List;
 public class Post {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
-    private Long id;
+    @GeneratedValue
+    @Column(name = "id")
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
