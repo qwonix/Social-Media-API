@@ -36,6 +36,18 @@ public class JwtConfigurer extends AbstractHttpConfigurer<JwtConfigurer, HttpSec
         final var authenticationManager =
                 builder.getSharedObject(AuthenticationManager.class);
 
+        var jwtAuthenticationFilter = getAuthenticationFilter(authenticationManager);
+
+        var preAuthenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
+        preAuthenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(token ->
+                new User(token.getName(), token.getCredentials().toString(), token.getAuthorities()));
+
+        builder
+                .authenticationProvider(preAuthenticatedAuthenticationProvider)
+                .addFilterAfter(jwtAuthenticationFilter, CsrfFilter.class);
+    }
+
+    private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
         var jwtAuthenticationFilter = new AuthenticationFilter(
                 authenticationManager,
                 new TokenAuthenticationConverter(authenticationService)
@@ -45,14 +57,7 @@ public class JwtConfigurer extends AbstractHttpConfigurer<JwtConfigurer, HttpSec
         jwtAuthenticationFilter.setSuccessHandler((request, response, authentication) -> CsrfFilter.skipRequest(request));
         jwtAuthenticationFilter.setFailureHandler((request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED));
         jwtAuthenticationFilter.setBeanName("JWT Authentication Filter");
-
-        var preAuthenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
-        preAuthenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(token ->
-                new User(token.getName(), token.getCredentials().toString(), token.getAuthorities()));
-
-        builder
-                .authenticationProvider(preAuthenticatedAuthenticationProvider)
-                .addFilterAfter(jwtAuthenticationFilter, CsrfFilter.class);
+        return jwtAuthenticationFilter;
     }
 
     public JwtConfigurer authenticationRequestMatcher(RequestMatcher requestMatcher) {

@@ -22,10 +22,7 @@ import ru.qwonix.test.social.media.api.serivce.impl.AuthenticationServiceImpl;
 import java.time.Duration;
 
 @Configuration
-@EnableMethodSecurity(
-        prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true)
+@EnableMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
@@ -47,6 +44,7 @@ public class SecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/api/v1/auth/register").permitAll()
+                                .requestMatchers("/api/v1/image/*").permitAll()
                                 .anyRequest().authenticated()
                 )
         ;

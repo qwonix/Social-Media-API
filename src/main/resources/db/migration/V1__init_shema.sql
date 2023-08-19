@@ -9,7 +9,7 @@ CREATE TABLE user_profile
 
 CREATE TABLE post
 (
-    id    UUID PRIMARY KEY,
+    id         UUID PRIMARY KEY,
     user_id    UUID REFERENCES user_profile,
     title      VARCHAR(100),
     text       TEXT,
@@ -35,8 +35,7 @@ CREATE TABLE message
 
 CREATE TABLE image
 (
-    image_name VARCHAR(255) PRIMARY KEY,
-    mime_type  VARCHAR(255)
+    image_name VARCHAR(255) PRIMARY KEY
 );
 
 create table post_image

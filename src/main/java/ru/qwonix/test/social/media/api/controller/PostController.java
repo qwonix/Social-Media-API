@@ -13,7 +13,6 @@ import ru.qwonix.test.social.media.api.dto.PostCreateDto;
 import ru.qwonix.test.social.media.api.dto.PostResponseDto;
 import ru.qwonix.test.social.media.api.dto.PostUpdateDto;
 import ru.qwonix.test.social.media.api.facade.PostFacade;
-import ru.qwonix.test.social.media.api.facade.impl.AuthorizationFacadeImpl;
 import ru.qwonix.test.social.media.api.result.CreatePostEntries;
 import ru.qwonix.test.social.media.api.result.DeletePostEntries;
 import ru.qwonix.test.social.media.api.result.FindPostEntries;
@@ -29,7 +28,6 @@ import java.util.UUID;
 public class PostController {
 
     private final PostFacade postFacade;
-    private final AuthorizationFacadeImpl authorizationFacade;
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDto> get(@PathVariable("id") UUID id) {
@@ -46,8 +44,8 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<PostResponseDto> create(@AuthenticationPrincipal UserDetails userDetails,
-                                    UriComponentsBuilder uriComponentsBuilder,
-                                    @RequestBody @Valid PostCreateDto postCreateDto) {
+                                                  UriComponentsBuilder uriComponentsBuilder,
+                                                  @RequestBody @Valid PostCreateDto postCreateDto) {
         log.debug("Post creation request title {}", postCreateDto.title());
         var result = postFacade.create(postCreateDto, userDetails.getUsername());
         if (result instanceof CreatePostEntries.Result.Success success) {
