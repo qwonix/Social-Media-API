@@ -25,7 +25,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         var encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPasswordHash(encodedPassword);
         user.setRole(Role.USER);
-        userProfileRepository.save(user);
 
         return userProfileRepository.save(user);
     }

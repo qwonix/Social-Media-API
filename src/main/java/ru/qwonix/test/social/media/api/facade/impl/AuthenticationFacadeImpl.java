@@ -32,8 +32,9 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
             return RegisterUserEntries.Result.EmailAlreadyExists.INSTANCE;
         }
         UserProfile user = userProfileMapper.map(registrationDto);
-        userDetailsService.register(user);
-        return RegisterUserEntries.Result.Success.INSTANCE;
+        UserProfile userProfile = userDetailsService.register(user);
+
+        return new RegisterUserEntries.Result.Success(userProfileMapper.mapToFull(userProfile));
     }
 
     @Override
