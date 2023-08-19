@@ -5,7 +5,7 @@ import ru.qwonix.test.social.media.api.dto.ImageResponseDto;
 
 public class UploadImageEntries {
     public sealed interface Result {
-        enum Fail implements UploadImageEntries.Result {
+        enum UserNotFound implements UploadImageEntries.Result {
             INSTANCE
         }
 

@@ -3,6 +3,8 @@ package ru.qwonix.test.social.media.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,15 +36,17 @@ public class ImageController {
 
     @PreAuthorize("hasAuthority('UPLOAD_IMAGE')")
     @PostMapping("/upload")
-    public ResponseEntity<?> upload(UriComponentsBuilder uriComponentsBuilder, @RequestParam("image") MultipartFile image) {
-        var result = imageFacade.upload(image);
+    public ResponseEntity<?> upload(@AuthenticationPrincipal UserDetails userDetails,
+                                    UriComponentsBuilder uriComponentsBuilder,
+                                    @RequestParam("image") MultipartFile image) {
+        var result = imageFacade.upload(image, userDetails.getUsername());
 
-        if (result instanceof UploadImageEntries.Result.Fail) {
+        if (result instanceof UploadImageEntries.Result.UserNotFound) {
             return ResponseEntity.badRequest().build();
         } else if (result instanceof UploadImageEntries.Result.Success success) {
             return ResponseEntity.created(
                     uriComponentsBuilder.path("/api/v1/image/{name}")
-                            .build(Map.of("name", success.imageResponseDto().name()))
+                            .build(Map.of("name", success.imageResponseDto().imageName()))
             ).build();
         }
         return ResponseEntity.internalServerError().build();

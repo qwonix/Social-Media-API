@@ -20,5 +20,6 @@ public interface PostMapper {
 
     @Mapping(target = "createdAt", dateFormat = "yyyy-MM-dd'T'HH:mm:ss")
     @Mapping(target = "owner", source = "post.user")
+    @Mapping(target = "images", source = "post.images")
     PostResponseDto map(Post post);
 }

@@ -6,6 +6,8 @@ import ru.qwonix.test.social.media.api.entity.Image;
 import ru.qwonix.test.social.media.api.repository.ImageRepository;
 import ru.qwonix.test.social.media.api.serivce.ImageService;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -19,6 +21,15 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Boolean existsByName(String name) {
         return imageRepository.existsByImageName(name);
+    }
 
+    @Override
+    public Optional<Image> findByName(String name) {
+        return imageRepository.findByImageName(name);
+    }
+
+    @Override
+    public Boolean isImageOwner(String imageName, String username) {
+        return imageRepository.existsByImageNameAndUserUsername(imageName, username);
     }
 }

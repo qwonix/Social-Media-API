@@ -1,7 +1,7 @@
 package ru.qwonix.test.social.media.api.result;
 
 
-import ru.qwonix.test.social.media.api.dto.ImageResponseDto;
+import ru.qwonix.test.social.media.api.dto.ImageResourceResponseDto;
 
 public class FindImageEntries {
     public sealed interface Result {
@@ -9,7 +9,7 @@ public class FindImageEntries {
             INSTANCE
         }
 
-        record Success(ImageResponseDto imageResponseDto) implements FindImageEntries.Result {
+        record Success(ImageResourceResponseDto imageResponseDto) implements FindImageEntries.Result {
         }
     }
 }

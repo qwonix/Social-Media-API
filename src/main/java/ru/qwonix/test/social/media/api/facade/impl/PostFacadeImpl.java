@@ -2,14 +2,14 @@ package ru.qwonix.test.social.media.api.facade.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.qwonix.test.social.media.api.dto.AttachImageRequestDto;
+import ru.qwonix.test.social.media.api.dto.DetachImageRequestDto;
 import ru.qwonix.test.social.media.api.dto.PostCreateDto;
 import ru.qwonix.test.social.media.api.dto.PostUpdateDto;
 import ru.qwonix.test.social.media.api.facade.PostFacade;
 import ru.qwonix.test.social.media.api.mapper.PostMapper;
-import ru.qwonix.test.social.media.api.result.CreatePostEntries;
-import ru.qwonix.test.social.media.api.result.DeletePostEntries;
-import ru.qwonix.test.social.media.api.result.FindPostEntries;
-import ru.qwonix.test.social.media.api.result.UpdatePostEntries;
+import ru.qwonix.test.social.media.api.result.*;
+import ru.qwonix.test.social.media.api.serivce.ImageService;
 import ru.qwonix.test.social.media.api.serivce.PostService;
 import ru.qwonix.test.social.media.api.serivce.UserProfileService;
 
@@ -21,6 +21,7 @@ public class PostFacadeImpl implements PostFacade {
 
     private final UserProfileService userProfileService;
     private final PostService postService;
+    private final ImageService imageService;
     private final PostMapper postMapper;
 
 
@@ -81,5 +82,33 @@ public class PostFacadeImpl implements PostFacade {
         } else {
             return FindPostEntries.Result.NotFound.INSTANCE;
         }
+    }
+
+    @Override
+    public AttachImageToPostEntries.Result attachImage(UUID id, AttachImageRequestDto attachImageRequestDto) {
+        var optionalPost = postService.findById(id);
+        if (optionalPost.isPresent()) {
+            var optionalImage = imageService.findByName(attachImageRequestDto.imageName());
+            if (optionalImage.isPresent()) {
+                var post = optionalPost.get();
+                var image = optionalImage.get();
+                if (!post.getImages().contains(image)) {
+                    post.getImages().add(image);
+                    var updatedPost = postService.updatePost(post);
+                    return new AttachImageToPostEntries.Result.Success(postMapper.map(updatedPost));
+                } else {
+                    return AttachImageToPostEntries.Result.ImageAlreadyAttached.INSTANCE;
+                }
+            } else {
+                return AttachImageToPostEntries.Result.ImageNotFound.INSTANCE;
+            }
+        } else {
+            return AttachImageToPostEntries.Result.PostNotFound.INSTANCE;
+        }
+    }
+
+    @Override
+    public DetachImageFromPostEntries.Result detachImage(UUID id, DetachImageRequestDto imageName) {
+        return null;
     }
 }

@@ -11,6 +11,7 @@ import ru.qwonix.test.social.media.api.result.FindImageEntries;
 import ru.qwonix.test.social.media.api.result.UploadImageEntries;
 import ru.qwonix.test.social.media.api.serivce.ImageService;
 import ru.qwonix.test.social.media.api.serivce.StorageService;
+import ru.qwonix.test.social.media.api.serivce.UserProfileService;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Component
 public class ImageFacadeImpl implements ImageFacade {
 
+    private final UserProfileService userProfileService;
     private final ImageService imageService;
     private final StorageService storageService;
     private final ImageMapper imageMapper;
@@ -41,16 +43,24 @@ public class ImageFacadeImpl implements ImageFacade {
     }
 
     @Override
-    public UploadImageEntries.Result upload(MultipartFile image) {
-        var filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
-        try {
-            storageService.store(image, filename);
-        } catch (IOException e) {
-            return UploadImageEntries.Result.Fail.INSTANCE;
-        }
-        var saved = imageService.save(new Image(filename));
+    public UploadImageEntries.Result upload(MultipartFile image, String username) {
+        var optionalUserProfile = userProfileService.findUserByUsername(username);
+        if (optionalUserProfile.isPresent()) {
+            var user = optionalUserProfile.get();
 
-        var imageResponse = imageMapper.map(saved, image.getResource());
-        return new UploadImageEntries.Result.Success(imageResponse);
+            var filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            try {
+                storageService.store(image, filename);
+            } catch (IOException e) {
+                return UploadImageEntries.Result.UserNotFound.INSTANCE;
+            }
+            var saved = imageService.save(new Image(filename, user));
+
+            var imageResponse = imageMapper.map(saved);
+            return new UploadImageEntries.Result.Success(imageResponse);
+        } else {
+            return UploadImageEntries.Result.UserNotFound.INSTANCE;
+        }
+
     }
 }

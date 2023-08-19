@@ -10,7 +10,7 @@ CREATE TABLE user_profile
 CREATE TABLE post
 (
     id         UUID PRIMARY KEY,
-    user_id    UUID REFERENCES user_profile,
+    user_id    UUID REFERENCES user_profile NOT NULL,
     title      VARCHAR(100),
     text       TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -35,12 +35,13 @@ CREATE TABLE message
 
 CREATE TABLE image
 (
-    image_name VARCHAR(255) PRIMARY KEY
+    image_name VARCHAR(255) PRIMARY KEY,
+    user_id    UUID REFERENCES user_profile NOT NULL
 );
 
 create table post_image
 (
-    image_name VARCHAR(255) REFERENCES image,
-    post_id    UUID REFERENCES post,
+    image_name VARCHAR(255) REFERENCES image NOT NULL,
+    post_id    UUID REFERENCES post NOT NULL,
     PRIMARY KEY (image_name, post_id)
 );

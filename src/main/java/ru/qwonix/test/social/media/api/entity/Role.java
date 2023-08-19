@@ -9,7 +9,7 @@ import java.util.Set;
 @Getter
 public enum Role {
     BANNED(Collections.emptySet()),
-    USER(Set.of(Permission.READ)),
+    USER(Set.of(Permission.READ, Permission.UPLOAD_IMAGE)),
     ADMIN(Set.of(Permission.READ, Permission.WRITE));
 
     private final Set<Permission> permissions;

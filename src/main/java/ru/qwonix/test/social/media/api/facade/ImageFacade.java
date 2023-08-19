@@ -7,5 +7,5 @@ import ru.qwonix.test.social.media.api.result.UploadImageEntries;
 public interface ImageFacade {
     FindImageEntries.Result findByName(String name);
 
-    UploadImageEntries.Result upload(MultipartFile image);
+    UploadImageEntries.Result upload(MultipartFile image, String username);
 }

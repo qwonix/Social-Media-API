@@ -9,14 +9,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.qwonix.test.social.media.api.dto.PostCreateDto;
-import ru.qwonix.test.social.media.api.dto.PostResponseDto;
-import ru.qwonix.test.social.media.api.dto.PostUpdateDto;
+import ru.qwonix.test.social.media.api.dto.*;
 import ru.qwonix.test.social.media.api.facade.PostFacade;
-import ru.qwonix.test.social.media.api.result.CreatePostEntries;
-import ru.qwonix.test.social.media.api.result.DeletePostEntries;
-import ru.qwonix.test.social.media.api.result.FindPostEntries;
-import ru.qwonix.test.social.media.api.result.UpdatePostEntries;
+import ru.qwonix.test.social.media.api.result.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -79,6 +74,48 @@ public class PostController {
         if (result instanceof DeletePostEntries.Result.NotFound) {
             return ResponseEntity.notFound().build();
         } else if (result instanceof DeletePostEntries.Result.Success) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @PreAuthorize("@authorizationFacadeImpl.isPostOwner(#id, authentication.name) and " +
+                  "@authorizationFacadeImpl.isImageOwner(#attachedImage.imageName(), authentication.name)")
+    @PostMapping("/{id}/image")
+    public ResponseEntity<?> attachImage(UriComponentsBuilder uriComponentsBuilder,
+                                         @PathVariable("id") UUID id,
+                                         @RequestBody AttachImageRequestDto attachedImage) {
+        log.debug("Add image {} to post {}", id, attachedImage.imageName());
+        var result = postFacade.attachImage(id, attachedImage);
+        if (result instanceof AttachImageToPostEntries.Result.PostNotFound) {
+            return ResponseEntity.notFound().build();
+        } else if (result instanceof AttachImageToPostEntries.Result.ImageNotFound) {
+            return ResponseEntity.badRequest().body("no image blay");
+        } else if (result instanceof AttachImageToPostEntries.Result.ImageAlreadyAttached) {
+            return ResponseEntity.badRequest().body("uzhee est");
+        } else if (result instanceof AttachImageToPostEntries.Result.Success success) {
+            return ResponseEntity.created(uriComponentsBuilder
+                            .path("/api/v1/post/{postId}")
+                            .build(Map.of("postId", success.postResponseDto().id())))
+                    .body(success.postResponseDto());
+        }
+
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @PreAuthorize("@authorizationFacadeImpl.isPostOwner(#id, authentication.name)")
+    @DeleteMapping("/{id}/image")
+    public ResponseEntity<?> detachImage(@PathVariable("id") UUID id, @RequestBody DetachImageRequestDto detachedImage) {
+        log.debug("Add image {} to post {}", id, detachedImage.imageName());
+        var result = postFacade.detachImage(id, detachedImage);
+        if (result instanceof DetachImageFromPostEntries.Result.PostNotFound) {
+            return ResponseEntity.notFound().build();
+        } else if (result instanceof DetachImageFromPostEntries.Result.ImageNotFound) {
+            return ResponseEntity.badRequest().body("no image blay ");
+        } else if (result instanceof DetachImageFromPostEntries.Result.ImageAlreadyDetached) {
+            return ResponseEntity.badRequest().body("uzhee net");
+        } else if (result instanceof DetachImageFromPostEntries.Result.Success) {
             return ResponseEntity.ok().build();
         }
 
