@@ -7,7 +7,15 @@ import java.util.Optional;
 
 public interface PostService {
 
-    Optional<Post> findPostById(Long postId);
+    Optional<Post> findById(Long postId);
 
-    void deletePost(Long postId);
+    void delete(Long postId);
+
+    Post createPost(Post post);
+
+    Post updatePost(Post post);
+
+    Boolean existsById(Long id);
+
+    Boolean isPostOwner(Long postId, String username);
 }

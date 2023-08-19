@@ -13,8 +13,8 @@ import ru.qwonix.test.social.media.api.dto.ErrorMessage;
 import ru.qwonix.test.social.media.api.dto.ErrorResponse;
 import ru.qwonix.test.social.media.api.dto.UserRegistrationDto;
 import ru.qwonix.test.social.media.api.facade.AuthenticationFacade;
+import ru.qwonix.test.social.media.api.result.GenerateTokenEntries;
 import ru.qwonix.test.social.media.api.result.RegisterUserEntries;
-import ru.qwonix.test.social.media.api.result.TokenGenerationEntries;
 
 import java.util.List;
 
@@ -45,10 +45,10 @@ public class AuthenticationController {
     }
 
     @GetMapping
-    public ResponseEntity<?> auth(@AuthenticationPrincipal UserDetails user) {
+    public ResponseEntity<AuthenticationResponse> auth(@AuthenticationPrincipal UserDetails user) {
         log.debug("Authentication request with username {}", user.getUsername());
         var result = authenticationFacade.getAuthenticationToken(user.getUsername());
-        if (result instanceof TokenGenerationEntries.Result.Success success) {
+        if (result instanceof GenerateTokenEntries.Result.Success success) {
             log.debug("Authentication request success");
             var token = success.token();
             return ResponseEntity.ok(new AuthenticationResponse(token));

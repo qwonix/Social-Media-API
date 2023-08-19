@@ -1,6 +1,6 @@
 package ru.qwonix.test.social.media.api.result;
 
-public record TokenGenerationEntries() {
+public record GenerateTokenEntries() {
 
     public sealed interface Result {
 

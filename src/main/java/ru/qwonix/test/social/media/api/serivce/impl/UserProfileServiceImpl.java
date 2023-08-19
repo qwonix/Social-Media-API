@@ -10,6 +10,8 @@ import ru.qwonix.test.social.media.api.entity.UserProfile;
 import ru.qwonix.test.social.media.api.repository.UserProfileRepository;
 import ru.qwonix.test.social.media.api.serivce.UserProfileService;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
@@ -36,6 +38,11 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public Boolean existsByEmail(String email) {
         return userProfileRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Optional<UserProfile> findUserByUsername(String username) {
+        return userProfileRepository.findByUsername(username);
     }
 
     @Override

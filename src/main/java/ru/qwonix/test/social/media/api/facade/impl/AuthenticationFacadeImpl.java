@@ -7,8 +7,8 @@ import ru.qwonix.test.social.media.api.dto.UserRegistrationDto;
 import ru.qwonix.test.social.media.api.entity.UserProfile;
 import ru.qwonix.test.social.media.api.facade.AuthenticationFacade;
 import ru.qwonix.test.social.media.api.mapper.UserProfileMapper;
+import ru.qwonix.test.social.media.api.result.GenerateTokenEntries;
 import ru.qwonix.test.social.media.api.result.RegisterUserEntries;
-import ru.qwonix.test.social.media.api.result.TokenGenerationEntries;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
 import ru.qwonix.test.social.media.api.serivce.UserProfileService;
 
@@ -37,13 +37,13 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     }
 
     @Override
-    public TokenGenerationEntries.Result getAuthenticationToken(String username) {
+    public GenerateTokenEntries.Result getAuthenticationToken(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         try {
             String token = authenticationService.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
-            return new TokenGenerationEntries.Result.Success(token);
+            return new GenerateTokenEntries.Result.Success(token);
         } catch (Exception e) {
-            return new TokenGenerationEntries.Result.Fail(e.getMessage());
+            return new GenerateTokenEntries.Result.Fail(e.getMessage());
         }
     }
 }

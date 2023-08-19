@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Sql("/sql/user_rest_controller/test_data.sql")
+@Sql("/sql/authentication_rest_controller/test_data.sql")
 @SpringBootTest(classes = TestcontainersConfiguration.class)
 @Transactional
 @AutoConfigureMockMvc
@@ -139,7 +139,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_UsernameShorterThanShouldBe_ReturnErrorMessage() throws Exception {
+    void handleRegister_UsernameIsTooShort_ReturnErrorMessage() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -167,7 +167,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_UsernameLongerThanShouldBe_ReturnErrorMessage() throws Exception {
+    void handleRegister_UsernameIsTooLong_ReturnErrorMessage() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -195,7 +195,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_PasswordIsShorterThanShouldBe_ReturnErrorMessage() throws Exception {
+    void handleRegister_PasswordIsTooShort_ReturnErrorMessage() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""

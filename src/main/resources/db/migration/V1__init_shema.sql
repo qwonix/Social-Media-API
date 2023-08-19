@@ -13,7 +13,7 @@ CREATE TABLE post
     user_id    UUID REFERENCES user_profile,
     title      VARCHAR(100),
     text       TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE friend
