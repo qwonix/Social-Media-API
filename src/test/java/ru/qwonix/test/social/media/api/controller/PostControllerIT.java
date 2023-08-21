@@ -7,12 +7,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import ru.qwonix.test.social.media.api.TestcontainersConfiguration;
-import ru.qwonix.test.social.media.api.entity.Role;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
+
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,20 +32,10 @@ class PostControllerIT {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    AuthenticationService authenticationService;
-
-    private String token;
-
-    @BeforeEach
-    void setUpToken() {
-        token = authenticationService.generateToken("user1", Role.USER.getAuthorities());
-    }
-
+    @WithMockUser(username = "user1")
     @Test
     void handleGet_ReturnValidResponse() throws Exception {
-        var requestBuilder = get("/api/v1/post/" + POST_1_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        var requestBuilder = get("/api/v1/post/" + POST_1_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
@@ -65,10 +58,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleGet_AnotherUsersPost_ReturnValidResponse() throws Exception {
-        var requestBuilder = get("/api/v1/post/" + POST_2_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        var requestBuilder = get("/api/v1/post/" + POST_2_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
@@ -88,20 +81,20 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleGet_IdIsInvalid_ReturnNotFound() throws Exception {
-        var requestBuilder = get("/api/v1/post/f3ec24d6-0597-4241-af31-ea524c65c333")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        var requestBuilder = get("/api/v1/post/f3ec24d6-0597-4241-af31-ea524c65c333");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound()
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleCreate_DataIsValid_ReturnValidResponse() throws Exception {
         var requestBuilder = post("/api/v1/post")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -124,10 +117,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleCreate_TitleIsTooLong_ReturnErrorMessage() throws Exception {
         var requestBuilder = post("/api/v1/post")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -153,10 +146,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleUpdate_NewTitle_ReturnValidResponse() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -186,10 +179,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleUpdate_TitleIsTooLong_ReturnErrorMessage() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -214,10 +207,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleUpdate_NewText_ReturnValidResponse() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -247,10 +240,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleUpdate_NewTitleAndText_ReturnValidResponse() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -282,10 +275,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleUpdate_AnotherUsersPost_ReturnErrorMessage() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_2_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -300,20 +293,20 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleDelete_ReturnSuccess() throws Exception {
-        var requestBuilder = delete("/api/v1/post/" + POST_1_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        var requestBuilder = delete("/api/v1/post/" + POST_1_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk()
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleDelete_AnotherUsersPost_ReturnErrorMessage() throws Exception {
-        var requestBuilder = delete("/api/v1/post/" + POST_2_ID)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        var requestBuilder = delete("/api/v1/post/" + POST_2_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isForbidden()
@@ -321,10 +314,10 @@ class PostControllerIT {
     }
 
 
+    @WithMockUser(username = "user1")
     @Test
     void handleAttachImage__Success() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -357,10 +350,10 @@ class PostControllerIT {
     }
 
 
+    @WithMockUser(username = "user1")
     @Test
     void handleAttachImage_ImageAlreadyAttached_ReturnErrorMessage() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -383,10 +376,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleAttachImage_ImageDoseNotExists_ReturnErrorMessage() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -409,11 +402,11 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleAttachImage_PostDoseNotExists_ReturnErrorMessage() throws Exception {
         final var POST_ID = "65955315-735b-4d87-81a9-cc48e1ed638b";
         var requestBuilder = post("/api/v1/post/" + POST_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -427,10 +420,10 @@ class PostControllerIT {
     }
 
 
+    @WithMockUser(username = "user1")
     @Test
     void handleAttachImage_ImageBelongsToAnotherUser_ReturnErrorMessage() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -444,10 +437,10 @@ class PostControllerIT {
     }
 
 
+    @WithMockUser(username = "user1")
     @Test
     void handleDetachImage__Success() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -474,10 +467,10 @@ class PostControllerIT {
     }
 
 
+    @WithMockUser(username = "user1")
     @Test
     void handleDetachImage_ImageNotAttached_ReturnErrorMessage() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -500,10 +493,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleDetachImage_ImageDoseNotExists_ReturnErrorMessage() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -526,11 +519,11 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleDetachImage_PostDoseNotExists_ReturnErrorMessage() throws Exception {
         final var POST_ID = "65955315-735b-4d87-81a9-cc48e1ed638b";
         var requestBuilder = delete("/api/v1/post/" + POST_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -543,10 +536,10 @@ class PostControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleDetachImage_ImageBelongsToAnotherPost_ReturnErrorMessage() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_2_ID + "/image")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {

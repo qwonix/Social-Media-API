@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +28,6 @@ class UserControllerIT {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    AuthenticationService authenticationService;
-
     @Test
     void handleGet_BasicAuthenticationGetItself_ReturnFullUserProfile() throws Exception {
         var requestBuilder = get("/api/v1/user/profile/user1")
@@ -40,14 +38,10 @@ class UserControllerIT {
         );
     }
 
-
+    @WithMockUser(username = "user1")
     @Test
     void handleGet_TokenAuthenticationGetItself_ReturnFullUserProfile() throws Exception {
-        final var user1 = "user1";
-        var token = authenticationService.generateToken(user1, Role.USER.getAuthorities());
-
-        var requestBuilder = get("/api/v1/user/profile/user1")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        var requestBuilder = get("/api/v1/user/profile/user1");
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
@@ -62,13 +56,10 @@ class UserControllerIT {
         );
     }
 
+    @WithMockUser(username = "user1")
     @Test
     void handleGet_TokenAuthenticationGetAnotherUser_ReturnPublicUserProfile() throws Exception {
-        final var user1 = "user1";
-        var token = authenticationService.generateToken(user1, Role.USER.getAuthorities());
-
-        var requestBuilder = get("/api/v1/user/profile/user2")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        var requestBuilder = get("/api/v1/user/profile/user2");
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
@@ -82,13 +73,11 @@ class UserControllerIT {
     }
 
     @Test
-    void handleGet_NoAuthentication_ReturnFullUserProfile() throws Exception {
+    void handleGet_NoAuthentication_ReturnUnauthorized() throws Exception {
         var requestBuilder = get("/api/v1/user/profile/user1");
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isUnauthorized()
         );
     }
-
-
 }
