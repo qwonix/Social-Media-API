@@ -45,10 +45,10 @@ public class UserProfile implements UserDetails {
     @ToString.Exclude
 
     @ManyToMany
-    @JoinTable(name = "friend",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id"))
-    private Set<UserProfile> friends = new HashSet<>();
+    @JoinTable(name = "relation",
+            joinColumns = @JoinColumn(name = "source_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "target_user_id"))
+    private Set<UserProfile> relations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,5 +1,5 @@
 package ru.qwonix.test.social.media.api.entity;
 
-public enum FriendshipType {
+public enum RelationType {
     SUBSCRIBER, FRIEND
 }

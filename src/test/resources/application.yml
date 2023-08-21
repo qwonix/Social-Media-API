@@ -2,7 +2,6 @@ servlet:
   multipart:
     max-file-size: 5MB
     max-request-size: 5MB
-
 jwt:
   secret:
     access: h9dHOdBnBQ2AVk5dX8wV3zXoxBwnlhk5P4gEQXyS5SOqqrmLI8odYKxdKwJg6FNUREFE3khJVtKHigcQWRp/aA==
@@ -13,3 +12,7 @@ jwt:
 logging:
   level:
     org.springframework.security: trace
+
+spring:
+  jpa:
+    show-sql: true
