@@ -1,5 +1,7 @@
 package ru.qwonix.test.social.media.api.result;
 
+import ru.qwonix.test.social.media.api.dto.PostResponseDto;
+
 public class DetachImageFromPostEntries {
     public sealed interface Result {
 
@@ -11,12 +13,12 @@ public class DetachImageFromPostEntries {
             INSTANCE
         }
 
-        enum ImageAlreadyDetached implements DetachImageFromPostEntries.Result {
+        enum ImageNotAttached implements DetachImageFromPostEntries.Result {
             INSTANCE
         }
 
-        enum Success implements DetachImageFromPostEntries.Result {
-            INSTANCE
+        record Success(PostResponseDto postResponseDto) implements DetachImageFromPostEntries.Result {
+
         }
     }
 }

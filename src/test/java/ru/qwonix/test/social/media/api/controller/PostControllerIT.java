@@ -375,7 +375,7 @@ class PostControllerIT {
                         {
                             "errorMessages": [{
                                     "field": "imageName",
-                                    "message": "Image already attached to the post"
+                                    "message": "The image has already been attached to the post"
                                 }
                             ]
                         }
@@ -430,6 +430,122 @@ class PostControllerIT {
     @Test
     void handleAttachImage_ImageBelongsToAnotherUser_ReturnErrorMessage() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "imageName" : "640f34de-9daf-4b6e-8f53-8c6a777a9532_image_3.png"
+                        }
+                        """);
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isForbidden()
+        );
+    }
+
+
+    @Test
+    void handleDetachImage__Success() throws Exception {
+        var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "imageName" : "ca444eab-30e7-4bdc-ac1e-a2fe48db8f60_image_1.png"
+                        }
+                        """);
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                            "id": "ecad0472-f529-4daa-afde-cd539ebc9391",
+                            "title": "Lorem ipsum",
+                            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non erat at velit fermentum semper.",
+                            "createdAt": "2023-08-19T12:00:00",
+                            "images": [ ],
+                            "owner": {
+                                "username": "user1"
+                            }
+                        }
+                        """)
+        );
+    }
+
+
+    @Test
+    void handleDetachImage_ImageNotAttached_ReturnErrorMessage() throws Exception {
+        var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "imageName" : "4f7a4e6e-2fa8-4152-9254-1a303bcea7ec_image_2.png"
+                        }
+                        """);
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                            "errorMessages": [{
+                                    "field": "imageName",
+                                    "message": "The image is not attached to the post"
+                                }
+                            ]
+                        }
+                        """)
+        );
+    }
+
+    @Test
+    void handleDetachImage_ImageDoseNotExists_ReturnErrorMessage() throws Exception {
+        var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "imageName" : "f695d9b8-8905-47e9-8779-483de28fd411_image_4.png"
+                        }
+                        """);
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        {
+                            "errorMessages": [{
+                                    "field": "imageName",
+                                    "message": "Image does not exist. In order to detach an image, you need to upload and attach it"
+                                }
+                            ]
+                        }
+                        """)
+        );
+    }
+
+    @Test
+    void handleDetachImage_PostDoseNotExists_ReturnErrorMessage() throws Exception {
+        final var POST_ID = "65955315-735b-4d87-81a9-cc48e1ed638b";
+        var requestBuilder = delete("/api/v1/post/" + POST_ID + "/image")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "imageName" : "f695d9b8-8905-47e9-8779-483de28fd411_image_3.png"
+                        }
+                        """);
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isNotFound()
+        );
+    }
+
+    @Test
+    void handleDetachImage_ImageBelongsToAnotherPost_ReturnErrorMessage() throws Exception {
+        var requestBuilder = delete("/api/v1/post/" + POST_2_ID + "/image")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""

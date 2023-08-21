@@ -108,7 +108,25 @@ public class PostFacadeImpl implements PostFacade {
     }
 
     @Override
-    public DetachImageFromPostEntries.Result detachImage(UUID id, DetachImageRequestDto imageName) {
-        return null;
+    public DetachImageFromPostEntries.Result detachImage(UUID id, DetachImageRequestDto detachImageRequestDto) {
+        var optionalPost = postService.findById(id);
+        if (optionalPost.isPresent()) {
+            var optionalImage = imageService.findByName(detachImageRequestDto.imageName());
+            if (optionalImage.isPresent()) {
+                var post = optionalPost.get();
+                var image = optionalImage.get();
+                if (post.getImages().contains(image)) {
+                    post.getImages().remove(image);
+                    var updatedPost = postService.updatePost(post);
+                    return new DetachImageFromPostEntries.Result.Success(postMapper.map(updatedPost));
+                } else {
+                    return DetachImageFromPostEntries.Result.ImageNotAttached.INSTANCE;
+                }
+            } else {
+                return DetachImageFromPostEntries.Result.ImageNotFound.INSTANCE;
+            }
+        } else {
+            return DetachImageFromPostEntries.Result.PostNotFound.INSTANCE;
+        }
     }
 }
