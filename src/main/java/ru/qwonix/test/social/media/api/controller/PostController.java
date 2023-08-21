@@ -52,7 +52,7 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PreAuthorize("@authorizationFacadeImpl.isPostOwner(#id, authentication.name)")
+    @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name)")
     @PatchMapping("/{id}")
     public ResponseEntity<PostResponseDto> update(@PathVariable("id") UUID id,
                                                   @RequestBody @Valid PostUpdateDto postUpdateDto) {
@@ -66,7 +66,7 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PreAuthorize("@authorizationFacadeImpl.isPostOwner(#id, authentication.name)")
+    @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name)")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") UUID id) {
         log.debug("Post delete request id {}", id);
@@ -80,8 +80,8 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PreAuthorize("@authorizationFacadeImpl.isPostOwner(#id, authentication.name) and " +
-                  "@authorizationFacadeImpl.isImageOwner(#attachedImage.imageName(), authentication.name)")
+    @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name) and " +
+                  "@authorizationFacadeImpl.isImageOwnerOrIsImageNotFound(#attachedImage.imageName(), authentication.name)")
     @PostMapping("/{id}/image")
     public ResponseEntity<?> attachImage(UriComponentsBuilder uriComponentsBuilder,
                                          @PathVariable("id") UUID id,
@@ -91,9 +91,13 @@ public class PostController {
         if (result instanceof AttachImageToPostEntries.Result.PostNotFound) {
             return ResponseEntity.notFound().build();
         } else if (result instanceof AttachImageToPostEntries.Result.ImageNotFound) {
-            return ResponseEntity.badRequest().body("no image blay");
+            return ResponseEntity.badRequest().body(
+                    new ErrorResponse("imageName", "Image does not exist. In order to attach an image, you need to upload it")
+            );
         } else if (result instanceof AttachImageToPostEntries.Result.ImageAlreadyAttached) {
-            return ResponseEntity.badRequest().body("uzhee est");
+            return ResponseEntity.badRequest().body(
+                    new ErrorResponse("imageName", "Image already attached to the post")
+            );
         } else if (result instanceof AttachImageToPostEntries.Result.Success success) {
             return ResponseEntity.created(uriComponentsBuilder
                             .path("/api/v1/post/{postId}")
@@ -104,7 +108,7 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PreAuthorize("@authorizationFacadeImpl.isPostOwner(#id, authentication.name)")
+    @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name)")
     @DeleteMapping("/{id}/image")
     public ResponseEntity<?> detachImage(@PathVariable("id") UUID id, @RequestBody DetachImageRequestDto detachedImage) {
         log.debug("Add image {} to post {}", id, detachedImage.imageName());

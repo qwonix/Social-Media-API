@@ -41,7 +41,7 @@ class ImageControllerIT {
                 );
     }
 
-    @WithMockUser(authorities = { "UPLOAD_IMAGE" })
+    @WithMockUser(username = "user1", authorities = {"UPLOAD_IMAGE"})
     @Test
     void handleUpload_ValidImage_ReturnValidResponse() throws Exception {
         var image3 = new MockMultipartFile(
@@ -62,7 +62,7 @@ class ImageControllerIT {
                 );
     }
 
-    @WithMockUser(authorities = { "UPLOAD_IMAGE" })
+    @WithMockUser(username = "user1", authorities = {"UPLOAD_IMAGE"})
     @Test
     void handleUpload_DuplicateImageName_ReturnValidResponse() throws Exception {
         var image2 = new MockMultipartFile(

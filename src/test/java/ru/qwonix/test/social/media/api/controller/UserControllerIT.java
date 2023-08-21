@@ -63,7 +63,7 @@ class UserControllerIT {
     }
 
     @Test
-    void handleGet_TokenAuthenticationGetOtherUser_ReturnPublicUserProfile() throws Exception {
+    void handleGet_TokenAuthenticationGetAnotherUser_ReturnPublicUserProfile() throws Exception {
         final var user1 = "user1";
         var token = authenticationService.generateToken(user1, Role.USER.getAuthorities());
 

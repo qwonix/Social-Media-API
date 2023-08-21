@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public interface AuthorizationFacade {
 
-    Boolean isPostOwner(UUID postId, String username);
+    Boolean isPostOwnerOrIsPostNotFound(UUID postId, String username);
 
-    Boolean isImageOwner(String imageName, String username);
+    Boolean isImageOwnerOrIsImageNotFound(String imageName, String username);
 }
