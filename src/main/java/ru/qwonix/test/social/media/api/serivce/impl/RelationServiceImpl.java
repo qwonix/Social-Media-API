@@ -18,6 +18,12 @@ public class RelationServiceImpl implements RelationService {
 
     private final RelationRepository relationRepository;
 
+    @Override
+    public List<UserProfile> findAllSubscriptions(UserProfile userProfile) {
+        return relationRepository.findAllBySourceUserAndRelationType(userProfile, RelationType.SUBSCRIBER).stream()
+                .map(Relation::getTargetUser).toList();
+    }
+
 
     @Override
     public Boolean isSubscriber(UserProfile source, UserProfile target) {

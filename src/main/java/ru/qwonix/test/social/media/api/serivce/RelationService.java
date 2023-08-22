@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface RelationService {
 
+    List<UserProfile> findAllSubscriptions(UserProfile userProfile);
+
     Boolean isSubscriber(UserProfile source, UserProfile target);
 
     Boolean isFriends(UserProfile user1, UserProfile user2);

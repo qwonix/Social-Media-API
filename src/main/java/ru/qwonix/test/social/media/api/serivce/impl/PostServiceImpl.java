@@ -1,11 +1,15 @@
 package ru.qwonix.test.social.media.api.serivce.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.qwonix.test.social.media.api.entity.Post;
+import ru.qwonix.test.social.media.api.entity.UserProfile;
 import ru.qwonix.test.social.media.api.repository.PostRepository;
 import ru.qwonix.test.social.media.api.serivce.PostService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,6 +27,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public Boolean isPostOwner(UUID postId, String username) {
         return postRepository.existsByIdAndUserUsername(postId, username);
+    }
+
+    @Override
+    public List<Post> findUsersPostsPaginated(List<UserProfile> userProfiles, int page, int size) {
+        return postRepository.findAllByUserIn(userProfiles,
+                PageRequest.of(
+                        page,
+                        size,
+                        Sort.Direction.DESC, "createdAt"));
     }
 
     @Override

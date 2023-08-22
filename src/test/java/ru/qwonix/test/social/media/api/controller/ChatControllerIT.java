@@ -339,4 +339,18 @@ class ChatControllerIT {
                         """, true)
         );
     }
+
+    @WithMockUser(username = "user2")
+    @Test
+    void handleGetChat_EmptyChat_ReturnValidResponse() throws Exception {
+        var requestBuilder = get("/api/v1/chat/" + USER_3_USERNAME);
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json("""
+                        [ ]
+                        """)
+        );
+    }
 }
