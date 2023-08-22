@@ -45,6 +45,11 @@ public class SecurityConfig {
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/api/v1/auth/register").permitAll()
                                 .requestMatchers("/api/v1/image/*").permitAll()
+                                .requestMatchers(HttpMethod.GET,
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/swagger-config",
+                                        "/favicon.ico",
+                                        "/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated()
                 )
         ;

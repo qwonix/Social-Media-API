@@ -1,5 +1,10 @@
 package ru.qwonix.test.social.media.api.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +21,7 @@ import ru.qwonix.test.social.media.api.result.*;
 import java.util.Map;
 import java.util.UUID;
 
+@Tag(name = "Posts", description = "Posts endpoints")
 @RequiredArgsConstructor
 @Slf4j
 @RestController
@@ -24,6 +30,14 @@ public class PostController {
 
     private final PostFacade postFacade;
 
+    @Operation(summary = "Get post", responses = {
+            @ApiResponse(responseCode = "200", description = "Post retrieved successfully", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PostResponseDto.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Post not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+    })
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDto> get(@PathVariable("id") UUID id) {
         log.debug("Get post with id {}", id);
@@ -37,6 +51,11 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
+    @Operation(summary = "Create new post", responses = {
+            @ApiResponse(responseCode = "201", description = "Post created successfully", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PostResponseDto.class))
+            })
+    })
     @PostMapping
     public ResponseEntity<PostResponseDto> create(@AuthenticationPrincipal UserDetails userDetails,
                                                   UriComponentsBuilder uriComponentsBuilder,
@@ -52,6 +71,14 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
+    @Operation(summary = "Update post", responses = {
+            @ApiResponse(responseCode = "200", description = "Post updated successfully", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PostResponseDto.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Post not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+    })
     @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name)")
     @PatchMapping("/{id}")
     public ResponseEntity<PostResponseDto> update(@PathVariable("id") UUID id,
@@ -66,6 +93,14 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
+    @Operation(summary = "Delete post", responses = {
+            @ApiResponse(responseCode = "200", description = "Post deleted successfully", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PostResponseDto.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Post not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+    })
     @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name)")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") UUID id) {
@@ -80,6 +115,20 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
+    @Operation(summary = "Attach image to post", responses = {
+            @ApiResponse(responseCode = "201", description = "Image attached successfully", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PostResponseDto.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Post not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Image not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Image already attached", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+    })
     @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name) and " +
                   "@authorizationFacadeImpl.isImageOwnerOrIsImageNotFound(#attachedImage.imageName(), authentication.name)")
     @PostMapping("/{id}/image")
@@ -108,6 +157,20 @@ public class PostController {
         return ResponseEntity.internalServerError().build();
     }
 
+    @Operation(summary = "Detach image from post", responses = {
+            @ApiResponse(responseCode = "201", description = "Image detached successfully", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PostResponseDto.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Post not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Image not found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Image not attached", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+    })
     @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name)")
     @DeleteMapping("/{id}/image")
     public ResponseEntity<?> detachImage(@PathVariable("id") UUID id, @RequestBody DetachImageRequestDto detachedImage) {
