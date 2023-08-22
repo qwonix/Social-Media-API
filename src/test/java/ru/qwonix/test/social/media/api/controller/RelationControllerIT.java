@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql("/sql/interaction_rest_controller/test_data.sql")
+@Sql("/sql/relation_rest_controller/test_data.sql")
 @Transactional
 @SpringBootTest(classes = TestcontainersConfiguration.class)
 @AutoConfigureMockMvc(printOnlyOnFailure = false)

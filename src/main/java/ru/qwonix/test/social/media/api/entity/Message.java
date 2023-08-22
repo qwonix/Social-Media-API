@@ -1,8 +1,17 @@
 package ru.qwonix.test.social.media.api.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 
 import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 
 @Entity
 @Table(name = "message")
@@ -24,6 +33,7 @@ public class Message {
     @Column
     private String text;
 
-    @Column(name = "created_at")
+    @CreationTimestamp(source = SourceType.DB)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

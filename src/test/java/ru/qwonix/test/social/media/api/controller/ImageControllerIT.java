@@ -25,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class ImageControllerIT {
 
-    public static final String IMAGE_2 = "img/image_rest_controller/image_2.png";
-    public static final String IMAGE_3 = "img/image_rest_controller/image_3.png";
+    private static final String IMAGE_2 = "img/image_rest_controller/image_2.png";
+    private static final String IMAGE_3 = "img/image_rest_controller/image_3.png";
 
     @Autowired
     MockMvc mockMvc;
