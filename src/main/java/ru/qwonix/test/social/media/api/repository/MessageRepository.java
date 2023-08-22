@@ -10,7 +10,6 @@ import ru.qwonix.test.social.media.api.entity.UserProfile;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-
     @Query("from Message m where m.sender = ?1 and m.recipient = ?2 or  m.sender = ?2 and m.recipient = ?1")
     List<Message> findAllBySenderAndRecipient(UserProfile sender, UserProfile recipient, Pageable pageable);
 }

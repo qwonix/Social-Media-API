@@ -16,8 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.qwonix.test.social.media.api.dto.ErrorResponse;
-import ru.qwonix.test.social.media.api.dto.MessageDto;
-import ru.qwonix.test.social.media.api.dto.SendMessageDto;
+import ru.qwonix.test.social.media.api.dto.MessageResponse;
+import ru.qwonix.test.social.media.api.dto.SendMessageRequest;
 import ru.qwonix.test.social.media.api.facade.ChatFacade;
 import ru.qwonix.test.social.media.api.result.GetChatEntries;
 import ru.qwonix.test.social.media.api.result.SendMessageEntries;
@@ -35,7 +35,7 @@ public class ChatController {
 
     @Operation(summary = "Send message to user", responses = {
             @ApiResponse(responseCode = "200", description = "Message sent successfully", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = MessageDto.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = MessageResponse.class))
             }),
             @ApiResponse(responseCode = "400", description = "Not a friend", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
@@ -47,9 +47,9 @@ public class ChatController {
     @PostMapping("/message")
     public ResponseEntity<?> sendMessage(@AuthenticationPrincipal UserDetails userDetails,
                                          @PathVariable String username,
-                                         @RequestBody @Valid SendMessageDto sendMessageDto) {
+                                         @RequestBody @Valid SendMessageRequest sendMessageRequest) {
         log.debug("User {} send message to user {}", userDetails.getUsername(), username);
-        var result = chatFacade.sendMessage(userDetails.getUsername(), username, sendMessageDto);
+        var result = chatFacade.sendMessage(userDetails.getUsername(), username, sendMessageRequest);
 
         if (result instanceof SendMessageEntries.Result.SenderNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -72,7 +72,7 @@ public class ChatController {
             @Parameter(name = "count", description = "Count of messages per page")
     }, responses = {
             @ApiResponse(responseCode = "200", description = "Chat messages retrieved successfully", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = MessageDto.class)))
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = MessageResponse.class)))
             }),
             @ApiResponse(responseCode = "404", description = "User not found", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
@@ -85,7 +85,7 @@ public class ChatController {
                                      @RequestParam Optional<Integer> count
     ) {
         log.debug("User {} send message to user {}", userDetails.getUsername(), username);
-        var result = chatFacade.getChatPaginated(userDetails.getUsername(), username, page.orElse(0), count.orElse(10));
+        var result = chatFacade.findChatPaginated(userDetails.getUsername(), username, page.orElse(0), count.orElse(10));
 
         if (result instanceof GetChatEntries.Result.SenderNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -45,16 +45,4 @@ public class RelationServiceImpl implements RelationService {
     public void removeSubscriber(UserProfile source, UserProfile target) {
         relationRepository.delete(new Relation(source, target, RelationType.SUBSCRIBER));
     }
-
-    @Override
-    public void addFriend(UserProfile source, UserProfile target) {
-        relationRepository.save(new Relation(source, target, RelationType.SUBSCRIBER));
-        relationRepository.save(new Relation(target, source, RelationType.SUBSCRIBER));
-    }
-
-    @Override
-    public void removeFriend(UserProfile source, UserProfile target) {
-        relationRepository.delete(new Relation(source, target, RelationType.SUBSCRIBER));
-        relationRepository.delete(new Relation(target, source, RelationType.SUBSCRIBER));
-    }
 }

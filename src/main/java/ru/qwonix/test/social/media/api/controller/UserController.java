@@ -45,7 +45,7 @@ public class UserController {
 
             } else if (result instanceof FindFullUserProfileEntries.Result.Success successResult) {
                 log.debug("Success user receipt with username {}", username);
-                return ResponseEntity.ok(successResult.userProfileResponseDto());
+                return ResponseEntity.ok(successResult.userProfileResponse());
             }
 
         } else {
@@ -56,7 +56,7 @@ public class UserController {
 
             } else if (result instanceof FindPublicUserProfileEntries.Result.Success successResult) {
                 log.debug("Success user receipt with username {}", username);
-                return ResponseEntity.ok(successResult.userProfileResponseDto());
+                return ResponseEntity.ok(successResult.userProfileResponse());
             }
         }
 

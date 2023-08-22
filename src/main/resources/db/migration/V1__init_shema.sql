@@ -13,7 +13,7 @@ CREATE TABLE post
     user_id    UUID REFERENCES user_profile NOT NULL,
     title      VARCHAR(100),
     text       TEXT,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE friend
@@ -42,6 +42,6 @@ CREATE TABLE image
 create table post_image
 (
     image_name VARCHAR(255) REFERENCES image NOT NULL,
-    post_id    UUID REFERENCES post NOT NULL,
+    post_id    UUID REFERENCES post          NOT NULL,
     PRIMARY KEY (image_name, post_id)
 );

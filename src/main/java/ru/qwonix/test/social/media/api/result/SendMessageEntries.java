@@ -1,7 +1,7 @@
 package ru.qwonix.test.social.media.api.result;
 
 
-import ru.qwonix.test.social.media.api.dto.MessageDto;
+import ru.qwonix.test.social.media.api.dto.MessageResponse;
 
 public class SendMessageEntries {
     public sealed interface Result {
@@ -18,7 +18,7 @@ public class SendMessageEntries {
             INSTANCE
         }
 
-        record Success(MessageDto message) implements SendMessageEntries.Result {
+        record Success(MessageResponse message) implements SendMessageEntries.Result {
         }
     }
 }

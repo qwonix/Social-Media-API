@@ -10,7 +10,5 @@ import java.util.List;
 
 
 public interface RelationRepository extends JpaRepository<Relation, RelationId> {
-
     List<Relation> findAllBySourceUserAndRelationType(UserProfile sourceUser, RelationType relationType);
-
 }

@@ -39,6 +39,7 @@ public class JwtConfigurer extends AbstractHttpConfigurer<JwtConfigurer, HttpSec
         var jwtAuthenticationFilter = getAuthenticationFilter(authenticationManager);
 
         var preAuthenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
+        // simple UserDetailsService that retrieves the necessary data from the PreAuthenticatedAuthenticationToken
         preAuthenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(token ->
                 new User(token.getName(), token.getCredentials().toString(), token.getAuthorities()));
 

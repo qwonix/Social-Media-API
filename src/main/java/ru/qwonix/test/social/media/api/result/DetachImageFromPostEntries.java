@@ -1,6 +1,6 @@
 package ru.qwonix.test.social.media.api.result;
 
-import ru.qwonix.test.social.media.api.dto.PostResponseDto;
+import ru.qwonix.test.social.media.api.dto.PostResponse;
 
 public class DetachImageFromPostEntries {
     public sealed interface Result {
@@ -17,7 +17,7 @@ public class DetachImageFromPostEntries {
             INSTANCE
         }
 
-        record Success(PostResponseDto postResponseDto) implements DetachImageFromPostEntries.Result {
+        record Success(PostResponse postResponse) implements DetachImageFromPostEntries.Result {
 
         }
     }

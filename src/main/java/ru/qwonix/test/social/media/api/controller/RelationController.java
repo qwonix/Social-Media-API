@@ -54,6 +54,7 @@ public class RelationController {
 
         return ResponseEntity.internalServerError().build();
     }
+
     @Operation(summary = "Remove the friend from friend list", responses = {
             @ApiResponse(responseCode = "200", description = "Friend removed successfully"),
             @ApiResponse(responseCode = "400", description = "Users are not friends", content = {

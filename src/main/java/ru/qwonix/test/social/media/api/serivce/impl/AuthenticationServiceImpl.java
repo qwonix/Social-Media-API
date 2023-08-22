@@ -16,18 +16,21 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    public static final String AUTHORITIES_CLAIM = "authorities";
+    private static final String AUTHORITIES_CLAIM = "authorities";
     private final Key accessJwtKey;
 
     @Setter
-    private Duration accessTokenTtl = Duration.ofDays(1);
+    private Duration accessTokenTtl;
 
-    public AuthenticationServiceImpl(@Nonnull String accessJwtSecret) {
+    public AuthenticationServiceImpl(@Nonnull String accessJwtSecret, Duration accessTokenTtl) {
         this.accessJwtKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessJwtSecret));
+        this.accessTokenTtl = accessTokenTtl;
     }
 
     @Override

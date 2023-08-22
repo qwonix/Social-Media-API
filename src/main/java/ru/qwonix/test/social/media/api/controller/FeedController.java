@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.qwonix.test.social.media.api.dto.ErrorResponse;
-import ru.qwonix.test.social.media.api.dto.PostResponseDto;
+import ru.qwonix.test.social.media.api.dto.PostResponse;
 import ru.qwonix.test.social.media.api.facade.FeedFacade;
 import ru.qwonix.test.social.media.api.result.GetFeedEntries;
 
@@ -38,7 +38,7 @@ public class FeedController {
             @Parameter(name = "count", description = "Count of posts per page")
     }, responses = {
             @ApiResponse(responseCode = "200", description = "User's feed retrieved successfully", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PostResponseDto.class)))
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PostResponse.class)))
             }),
             @ApiResponse(responseCode = "404", description = "User not found", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
@@ -49,7 +49,7 @@ public class FeedController {
                                      @RequestParam Optional<Integer> page,
                                      @RequestParam Optional<Integer> count) {
         log.debug("Get feed by {}", userDetails.getUsername());
-        var result = feedFacade.getFeedPaginated(userDetails.getUsername(), page.orElse(0), count.orElse(10));
+        var result = feedFacade.findFeedPaginated(userDetails.getUsername(), page.orElse(0), count.orElse(10));
 
         if (result instanceof GetFeedEntries.Result.UserNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

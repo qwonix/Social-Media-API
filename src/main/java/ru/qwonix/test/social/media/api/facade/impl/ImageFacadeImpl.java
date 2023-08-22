@@ -28,18 +28,17 @@ public class ImageFacadeImpl implements ImageFacade {
 
     @Override
     public FindImageEntries.Result findByName(String name) {
-        if (Boolean.TRUE.equals(imageService.existsByName(name))) {
-            Resource resource;
-            try {
-                resource = storageService.loadAsResource(name);
-            } catch (MalformedURLException e) {
-                return FindImageEntries.Result.NotFound.INSTANCE;
-            }
-            var imageResponseDto = imageMapper.map(name, resource);
-            return new FindImageEntries.Result.Success(imageResponseDto);
-        } else {
+        if (Boolean.FALSE.equals(imageService.existsByName(name))) {
             return FindImageEntries.Result.NotFound.INSTANCE;
         }
+
+        Resource resource;
+        try {
+            resource = storageService.loadAsResource(name);
+        } catch (MalformedURLException e) {
+            return FindImageEntries.Result.NotFound.INSTANCE;
+        }
+        return new FindImageEntries.Result.Success(imageMapper.map(name, resource));
     }
 
     @Override
@@ -48,22 +47,20 @@ public class ImageFacadeImpl implements ImageFacade {
             return UploadImageEntries.Result.FileIsNotImage.INSTANCE;
         }
         var optionalUserProfile = userProfileService.findUserByUsername(username);
-        if (optionalUserProfile.isPresent()) {
-            var user = optionalUserProfile.get();
-
-            var filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
-            try {
-                storageService.store(image, filename);
-            } catch (IOException e) {
-                return UploadImageEntries.Result.UserNotFound.INSTANCE;
-            }
-            var saved = imageService.save(new Image(filename, user));
-
-            var imageResponse = imageMapper.map(saved);
-            return new UploadImageEntries.Result.Success(imageResponse);
-        } else {
+        if (optionalUserProfile.isEmpty()) {
             return UploadImageEntries.Result.UserNotFound.INSTANCE;
         }
 
+        var user = optionalUserProfile.get();
+
+        var filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
+        try {
+            storageService.store(image, filename);
+        } catch (IOException e) {
+            return UploadImageEntries.Result.UserNotFound.INSTANCE;
+        }
+        var saved = imageService.save(new Image(filename, user));
+
+        return new UploadImageEntries.Result.Success(imageMapper.map(saved));
     }
 }

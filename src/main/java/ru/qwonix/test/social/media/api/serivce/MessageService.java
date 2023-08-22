@@ -8,5 +8,5 @@ import java.util.List;
 public interface MessageService {
     Message save(Message message);
 
-    List<Message> getMessagesPaginated(UserProfile sender, UserProfile recipient, Integer page, Integer size);
+    List<Message> findMessagesPaginated(UserProfile sender, UserProfile recipient, Integer page, Integer size);
 }

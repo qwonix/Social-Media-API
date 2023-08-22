@@ -1,6 +1,6 @@
 package ru.qwonix.test.social.media.api.result;
 
-import ru.qwonix.test.social.media.api.dto.FullUserProfileResponseDto;
+import ru.qwonix.test.social.media.api.dto.FullUserProfileResponse;
 
 public record RegisterUserEntries() {
 
@@ -13,7 +13,7 @@ public record RegisterUserEntries() {
             INSTANCE
         }
 
-        record Success(FullUserProfileResponseDto userProfileResponseDto) implements Result {
+        record Success(FullUserProfileResponse userProfileResponse) implements Result {
         }
     }
 }

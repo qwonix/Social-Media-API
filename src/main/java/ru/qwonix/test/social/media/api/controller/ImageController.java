@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +45,7 @@ public class ImageController {
         } else if (result instanceof FindImageEntries.Result.Success success) {
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.IMAGE_PNG)
-                    .body(success.imageResponseDto().resource());
+                    .body(success.imageResourceResponse().resource());
         }
         return ResponseEntity.internalServerError().build();
     }
@@ -71,7 +70,7 @@ public class ImageController {
         } else if (result instanceof UploadImageEntries.Result.Success success) {
             return ResponseEntity.created(
                     uriComponentsBuilder.path("/api/v1/image/{name}")
-                            .build(Map.of("name", success.imageResponseDto().imageName()))
+                            .build(Map.of("name", success.imageResponse().imageName()))
             ).build();
         }
         return ResponseEntity.internalServerError().build();

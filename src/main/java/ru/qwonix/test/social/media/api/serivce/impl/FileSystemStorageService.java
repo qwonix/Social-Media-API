@@ -40,7 +40,6 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public void store(MultipartFile file, String filename) throws IOException {
-
         if (file.isEmpty()) {
             throw new StorageException("Failed to store empty file.");
         }

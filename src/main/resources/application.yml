@@ -9,11 +9,11 @@ spring:
       max-request-size: 5MB
 
 jwt:
-  secret:
-    access: h9dHOdBnBQ2AVk5dX8wV3zXoxBwnlhk5P4gEQXyS5SOqqrmLI8odYKxdKwJg6FNUREFE3khJVtKHigcQWRp/aA==
+  access:
+    secret: h9dHOdBnBQ2AVk5dX8wV3zXoxBwnlhk5P4gEQXyS5SOqqrmLI8odYKxdKwJg6FNUREFE3khJVtKHigcQWRp/aA==
+    ttl: 1d
 
-  ttl:
-    access: 1h
 logging:
   level:
+    ru.qwonix.test.social.media.api: debug
     org.springframework.security: trace

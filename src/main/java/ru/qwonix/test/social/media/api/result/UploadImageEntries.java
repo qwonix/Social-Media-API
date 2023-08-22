@@ -1,7 +1,7 @@
 package ru.qwonix.test.social.media.api.result;
 
 
-import ru.qwonix.test.social.media.api.dto.ImageResponseDto;
+import ru.qwonix.test.social.media.api.dto.ImageResponse;
 
 public class UploadImageEntries {
     public sealed interface Result {
@@ -13,7 +13,7 @@ public class UploadImageEntries {
             INSTANCE
         }
 
-        record Success(ImageResponseDto imageResponseDto) implements UploadImageEntries.Result {
+        record Success(ImageResponse imageResponse) implements UploadImageEntries.Result {
         }
     }
 }

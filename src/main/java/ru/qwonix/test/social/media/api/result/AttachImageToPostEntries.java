@@ -1,6 +1,6 @@
 package ru.qwonix.test.social.media.api.result;
 
-import ru.qwonix.test.social.media.api.dto.PostResponseDto;
+import ru.qwonix.test.social.media.api.dto.PostResponse;
 
 public class AttachImageToPostEntries {
     public sealed interface Result {
@@ -17,7 +17,7 @@ public class AttachImageToPostEntries {
             INSTANCE
         }
 
-        record Success(PostResponseDto postResponseDto) implements AttachImageToPostEntries.Result {
+        record Success(PostResponse postResponse) implements AttachImageToPostEntries.Result {
 
         }
     }

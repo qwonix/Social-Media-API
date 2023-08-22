@@ -2,7 +2,7 @@ package ru.qwonix.test.social.media.api.facade.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.qwonix.test.social.media.api.dto.SendMessageDto;
+import ru.qwonix.test.social.media.api.dto.SendMessageRequest;
 import ru.qwonix.test.social.media.api.entity.Message;
 import ru.qwonix.test.social.media.api.facade.ChatFacade;
 import ru.qwonix.test.social.media.api.mapper.MessageMapper;
@@ -22,7 +22,7 @@ public class ChatFacadeImpl implements ChatFacade {
     private final MessageMapper messageMapper;
 
     @Override
-    public SendMessageEntries.Result sendMessage(String senderUsername, String recipientUsername, SendMessageDto sendMessageDto) {
+    public SendMessageEntries.Result sendMessage(String senderUsername, String recipientUsername, SendMessageRequest sendMessageRequest) {
         var optionalSender = userProfileService.findUserByUsername(senderUsername);
         if (optionalSender.isEmpty()) {
             return SendMessageEntries.Result.SenderNotFound.INSTANCE;
@@ -37,7 +37,7 @@ public class ChatFacadeImpl implements ChatFacade {
         if (Boolean.FALSE.equals(relationService.isFriends(sender, recipient))) {
             return SendMessageEntries.Result.NonFriends.INSTANCE;
         }
-        Message message = messageMapper.map(sendMessageDto);
+        Message message = messageMapper.map(sendMessageRequest);
         message.setSender(sender);
         message.setRecipient(recipient);
 
@@ -45,7 +45,7 @@ public class ChatFacadeImpl implements ChatFacade {
     }
 
     @Override
-    public GetChatEntries.Result getChatPaginated(String senderUsername, String recipientUsername, Integer page, Integer size) {
+    public GetChatEntries.Result findChatPaginated(String senderUsername, String recipientUsername, Integer page, Integer count) {
         var optionalSender = userProfileService.findUserByUsername(senderUsername);
         if (optionalSender.isEmpty()) {
             return GetChatEntries.Result.SenderNotFound.INSTANCE;
@@ -55,13 +55,12 @@ public class ChatFacadeImpl implements ChatFacade {
             return GetChatEntries.Result.RecipientNotFound.INSTANCE;
         }
 
-        var chatPaginated = messageService.getMessagesPaginated(
-                optionalSender.get(),
-                optionalRecipient.get(),
-                page,
-                size);
+        var messageResponseList = messageService.findMessagesPaginated(optionalSender.get(),
+                        optionalRecipient.get(),
+                        page,
+                        count)
+                .stream().map(messageMapper::map).toList();
 
-        return new GetChatEntries.Result.Success(chatPaginated.stream()
-                .map(messageMapper::map).toList());
+        return new GetChatEntries.Result.Success(messageResponseList);
     }
 }

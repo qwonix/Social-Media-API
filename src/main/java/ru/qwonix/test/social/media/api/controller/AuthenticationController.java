@@ -36,34 +36,34 @@ public class AuthenticationController {
 
     @Operation(summary = "Registration", responses = {
             @ApiResponse(responseCode = "201", description = "User successfully registered", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = FullUserProfileResponseDto.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = FullUserProfileResponse.class))
             }),
             @ApiResponse(responseCode = "409", description = "User registration conflict", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
             }),
     })
     @PostMapping("/register")
-    public ResponseEntity<?> register(UriComponentsBuilder uriComponentsBuilder, @RequestBody @Valid UserRegistrationDto registrationDto) {
-        log.debug("Registration request with username {}", registrationDto.username());
-        var result = authenticationFacade.registerUser(registrationDto);
+    public ResponseEntity<?> register(UriComponentsBuilder uriComponentsBuilder, @RequestBody @Valid UserRegistrationRequest registrationRequest) {
+        log.debug("Registration request with username {}", registrationRequest.username());
+        var result = authenticationFacade.registerUser(registrationRequest);
 
         if (result instanceof RegisterUserEntries.Result.UsernameAlreadyExists) {
-            log.debug("Registration request fail user already exists {}", registrationDto.username());
+            log.debug("Registration request fail user already exists {}", registrationRequest.username());
 
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(USERNAME_ALREADY_EXISTS);
         } else if (result instanceof RegisterUserEntries.Result.EmailAlreadyExists) {
-            log.debug("Registration request fail email already exists {}", registrationDto.username());
+            log.debug("Registration request fail email already exists {}", registrationRequest.username());
 
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(EMAIL_ALREADY_EXISTS);
         } else if (result instanceof RegisterUserEntries.Result.Success success) {
-            log.debug("Registration request success {}", registrationDto.username());
+            log.debug("Registration request success {}", registrationRequest.username());
 
             return ResponseEntity.created(uriComponentsBuilder
                             .path("/api/v1/user/profile/{username}")
-                            .build(Map.of("username", success.userProfileResponseDto().id())))
-                    .body(success.userProfileResponseDto());
+                            .build(Map.of("username", success.userProfileResponse().id())))
+                    .body(success.userProfileResponse());
         } else {
             return ResponseEntity.internalServerError().build();
         }
@@ -80,8 +80,7 @@ public class AuthenticationController {
         var result = authenticationFacade.getAuthenticationToken(user.getUsername());
         if (result instanceof GenerateTokenEntries.Result.Success success) {
             log.debug("Authentication request success");
-            var token = success.token();
-            return ResponseEntity.ok(new AuthenticationResponse(token));
+            return ResponseEntity.ok(success.authenticationResponse());
         } else {
             return ResponseEntity.internalServerError().build();
         }

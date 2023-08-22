@@ -23,10 +23,8 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     private final AuthenticationService authenticationService;
 
-
     @Override
     public Authentication convert(HttpServletRequest request) {
-        log.info("token authentication request");
         final var token = obtainToken(request);
         if (token != null) {
             Token accessToken;

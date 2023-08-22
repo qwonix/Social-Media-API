@@ -2,15 +2,15 @@ servlet:
   multipart:
     max-file-size: 5MB
     max-request-size: 5MB
-jwt:
-  secret:
-    access: h9dHOdBnBQ2AVk5dX8wV3zXoxBwnlhk5P4gEQXyS5SOqqrmLI8odYKxdKwJg6FNUREFE3khJVtKHigcQWRp/aA==
 
-  ttl:
-    access: 3s
+jwt:
+  access:
+    secret: h9dHOdBnBQ2AVk5dX8wV3zXoxBwnlhk5P4gEQXyS5SOqqrmLI8odYKxdKwJg6FNUREFE3khJVtKHigcQWRp/aA==
+    ttl: 1d
 
 logging:
   level:
+    ru.qwonix.test.social.media.api: debug
     org.springframework.security: trace
 
 spring:

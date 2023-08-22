@@ -3,7 +3,8 @@ package ru.qwonix.test.social.media.api.facade.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ru.qwonix.test.social.media.api.dto.UserRegistrationDto;
+import ru.qwonix.test.social.media.api.dto.AuthenticationResponse;
+import ru.qwonix.test.social.media.api.dto.UserRegistrationRequest;
 import ru.qwonix.test.social.media.api.entity.UserProfile;
 import ru.qwonix.test.social.media.api.facade.AuthenticationFacade;
 import ru.qwonix.test.social.media.api.mapper.UserProfileMapper;
@@ -22,16 +23,16 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
 
 
     @Override
-    public RegisterUserEntries.Result registerUser(UserRegistrationDto registrationDto) {
-        String username = registrationDto.username();
+    public RegisterUserEntries.Result registerUser(UserRegistrationRequest registrationRequest) {
+        String username = registrationRequest.username();
         if (Boolean.TRUE.equals(userDetailsService.existsByUsername(username))) {
             return RegisterUserEntries.Result.UsernameAlreadyExists.INSTANCE;
         }
-        String email = registrationDto.email();
+        String email = registrationRequest.email();
         if (Boolean.TRUE.equals(userDetailsService.existsByEmail(email))) {
             return RegisterUserEntries.Result.EmailAlreadyExists.INSTANCE;
         }
-        UserProfile user = userProfileMapper.map(registrationDto);
+        UserProfile user = userProfileMapper.map(registrationRequest);
         UserProfile userProfile = userDetailsService.register(user);
 
         return new RegisterUserEntries.Result.Success(userProfileMapper.mapToFull(userProfile));
@@ -42,7 +43,7 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         try {
             String token = authenticationService.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
-            return new GenerateTokenEntries.Result.Success(token);
+            return new GenerateTokenEntries.Result.Success(new AuthenticationResponse(token));
         } catch (Exception e) {
             return new GenerateTokenEntries.Result.Fail(e.getMessage());
         }

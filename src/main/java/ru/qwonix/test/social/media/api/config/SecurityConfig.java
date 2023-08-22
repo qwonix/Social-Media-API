@@ -1,6 +1,5 @@
 package ru.qwonix.test.social.media.api.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,8 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
 import ru.qwonix.test.social.media.api.serivce.impl.AuthenticationServiceImpl;
-
-import java.time.Duration;
 
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true)
@@ -58,11 +55,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationService authenticationService(@Value("${jwt.secret.access}") String accessJwtSecret,
-                                                       @Value("${jwt.ttl.access}") Duration accessTtl) {
-        var authenticationService = new AuthenticationServiceImpl(accessJwtSecret);
-        authenticationService.setAccessTokenTtl(accessTtl);
-        return authenticationService;
+    public AuthenticationService authenticationService(JwtTokenProperties jwtTokenProperties) {
+        return new AuthenticationServiceImpl(jwtTokenProperties.getSecret(), jwtTokenProperties.getTtl());
     }
 
     @Bean
@@ -72,9 +66,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    protected DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
+    protected DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
     }

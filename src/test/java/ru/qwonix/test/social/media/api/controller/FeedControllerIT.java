@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import ru.qwonix.test.social.media.api.TestcontainersConfiguration;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -79,7 +78,9 @@ class FeedControllerIT {
     @WithMockUser(username = "user2")
     @Test
     void handleGetFeed_OnePost_ReturnValidResponse() throws Exception {
-        var requestBuilder = get("/api/v1/feed?page=0&size=10");
+        var requestBuilder = get("/api/v1/feed")
+                .queryParam("page", "0")
+                .queryParam("count", "10");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
@@ -105,8 +106,10 @@ class FeedControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGetFeed3_Page1Size2_ReturnValidResponse() throws Exception {
-        var requestBuilder = get("/api/v1/feed?page=1&size=2");
+    void handleGetFeed_Page1Size2_ReturnValidResponse() throws Exception {
+        var requestBuilder = get("/api/v1/feed")
+                .queryParam("page", "1")
+                .queryParam("count", "2");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),

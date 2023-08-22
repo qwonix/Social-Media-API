@@ -1,6 +1,6 @@
 package ru.qwonix.test.social.media.api.result;
 
-import ru.qwonix.test.social.media.api.dto.FullUserProfileResponseDto;
+import ru.qwonix.test.social.media.api.dto.FullUserProfileResponse;
 
 public class FindFullUserProfileEntries {
     public sealed interface Result {
@@ -8,7 +8,7 @@ public class FindFullUserProfileEntries {
             INSTANCE
         }
 
-        record Success(FullUserProfileResponseDto userProfileResponseDto) implements FindFullUserProfileEntries.Result {
+        record Success(FullUserProfileResponse userProfileResponse) implements FindFullUserProfileEntries.Result {
         }
     }
 }

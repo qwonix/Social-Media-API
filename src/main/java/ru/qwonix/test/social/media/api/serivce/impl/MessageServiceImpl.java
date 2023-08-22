@@ -23,7 +23,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> getMessagesPaginated(UserProfile sender, UserProfile recipient, Integer page, Integer size) {
+    public List<Message> findMessagesPaginated(UserProfile sender, UserProfile recipient, Integer page, Integer size) {
         return messageRepository.findAllBySenderAndRecipient(sender, recipient,
                 PageRequest.of(
                         page,

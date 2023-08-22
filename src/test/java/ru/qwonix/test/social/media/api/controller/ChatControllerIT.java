@@ -22,13 +22,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class ChatControllerIT {
 
-    @Autowired
-    MockMvc mockMvc;
-
     private static final String NON_EXISTENT_USERNAME = "non";
     private static final String USER_1_USERNAME = "user1";
     private static final String USER_2_USERNAME = "user2";
     private static final String USER_3_USERNAME = "user3";
+    @Autowired
+    MockMvc mockMvc;
 
     @WithMockUser(username = "user1")
     @Test
@@ -276,7 +275,9 @@ class ChatControllerIT {
     @WithMockUser(username = "user1")
     @Test
     void handleGetChat_UsingPageAndSize_ReturnValidResponse() throws Exception {
-        var requestBuilder = get("/api/v1/chat/" + USER_2_USERNAME + "?page=0&size=2");
+        var requestBuilder = get("/api/v1/chat/" + USER_2_USERNAME)
+                .queryParam("page", "0")
+                .queryParam("count", "2");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
@@ -310,7 +311,9 @@ class ChatControllerIT {
     @WithMockUser(username = "user1")
     @Test
     void handleGetChat_UsingPageAndSize2_ReturnValidResponse() throws Exception {
-        var requestBuilder = get("/api/v1/chat/" + USER_2_USERNAME + "?page=1&size=2");
+        var requestBuilder = get("/api/v1/chat/" + USER_2_USERNAME)
+                .queryParam("page", "1")
+                .queryParam("count", "2");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),

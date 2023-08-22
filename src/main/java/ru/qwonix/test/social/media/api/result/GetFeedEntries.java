@@ -1,10 +1,7 @@
 package ru.qwonix.test.social.media.api.result;
 
 
-import ru.qwonix.test.social.media.api.dto.FeedDto;
-import ru.qwonix.test.social.media.api.dto.MessageDto;
-
-import java.util.List;
+import ru.qwonix.test.social.media.api.dto.Feed;
 
 public class GetFeedEntries {
     public sealed interface Result {
@@ -13,7 +10,7 @@ public class GetFeedEntries {
             INSTANCE
         }
 
-        record Success(FeedDto feed) implements GetFeedEntries.Result {
+        record Success(Feed feed) implements GetFeedEntries.Result {
         }
     }
 }

@@ -1,6 +1,5 @@
 package ru.qwonix.test.social.media.api.serivce;
 
-import ru.qwonix.test.social.media.api.entity.Relation;
 import ru.qwonix.test.social.media.api.entity.UserProfile;
 
 import java.util.List;
@@ -16,8 +15,4 @@ public interface RelationService {
     void addSubscriber(UserProfile source, UserProfile target);
 
     void removeSubscriber(UserProfile source, UserProfile target);
-
-    void addFriend(UserProfile source, UserProfile target);
-
-    void removeFriend(UserProfile source, UserProfile target);
 }

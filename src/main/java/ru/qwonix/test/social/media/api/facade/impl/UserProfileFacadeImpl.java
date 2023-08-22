@@ -19,26 +19,22 @@ public class UserProfileFacadeImpl implements UserProfileFacade {
     @Override
     public FindFullUserProfileEntries.Result findFullByUsername(String username) {
         var optionalUserProfile = userProfileService.findUserByUsername(username);
-        if (optionalUserProfile.isPresent()) {
-            var userProfile = optionalUserProfile.get();
-            var fullUserDto = userProfileMapper.mapToFull(userProfile);
-
-            return new FindFullUserProfileEntries.Result.Success(fullUserDto);
-        } else {
+        if (optionalUserProfile.isEmpty()) {
             return FindFullUserProfileEntries.Result.NotFound.INSTANCE;
         }
+
+        var userProfile = optionalUserProfile.get();
+        return new FindFullUserProfileEntries.Result.Success(userProfileMapper.mapToFull(userProfile));
     }
 
     @Override
     public FindPublicUserProfileEntries.Result findPublicByUsername(String username) {
         var optionalUserProfile = userProfileService.findUserByUsername(username);
-        if (optionalUserProfile.isPresent()) {
-            var userProfile = optionalUserProfile.get();
-            var publicUserDto = userProfileMapper.mapToPublic(userProfile);
-
-            return new FindPublicUserProfileEntries.Result.Success(publicUserDto);
-        } else {
+        if (optionalUserProfile.isEmpty()) {
             return FindPublicUserProfileEntries.Result.NotFound.INSTANCE;
         }
+        var userProfile = optionalUserProfile.get();
+
+        return new FindPublicUserProfileEntries.Result.Success(userProfileMapper.mapToPublic(userProfile));
     }
 }

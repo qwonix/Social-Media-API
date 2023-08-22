@@ -1,6 +1,6 @@
 package ru.qwonix.test.social.media.api.result;
 
-import ru.qwonix.test.social.media.api.dto.PostResponseDto;
+import ru.qwonix.test.social.media.api.dto.PostResponse;
 
 public class FindPostEntries {
     public sealed interface Result {
@@ -8,7 +8,7 @@ public class FindPostEntries {
             INSTANCE
         }
 
-        record Success(PostResponseDto postResponseDto) implements FindPostEntries.Result {
+        record Success(PostResponse postResponse) implements FindPostEntries.Result {
         }
     }
 }

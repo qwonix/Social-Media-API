@@ -2,24 +2,19 @@ package ru.qwonix.test.social.media.api.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.qwonix.test.social.media.api.dto.PostCreateDto;
-import ru.qwonix.test.social.media.api.dto.PostResponseDto;
-import ru.qwonix.test.social.media.api.dto.PostUpdateDto;
+import ru.qwonix.test.social.media.api.dto.CreatePostRequest;
+import ru.qwonix.test.social.media.api.dto.PostResponse;
+import ru.qwonix.test.social.media.api.dto.UpdatePostRequest;
 import ru.qwonix.test.social.media.api.entity.Post;
 
 @Mapper(componentModel = "spring")
 public interface PostMapper {
 
-    @Mapping(target = "title", source = "postUpdateDto.title")
-    @Mapping(target = "text", source = "postUpdateDto.text")
-    Post map(PostUpdateDto postUpdateDto);
+    Post map(UpdatePostRequest updatePostRequest);
 
-    @Mapping(target = "title", source = "postCreateDto.title")
-    @Mapping(target = "text", source = "postCreateDto.text")
-    Post map(PostCreateDto postCreateDto);
+    Post map(CreatePostRequest createPostRequest);
 
     @Mapping(target = "createdAt", dateFormat = "yyyy-MM-dd'T'HH:mm:ss")
-    @Mapping(target = "owner", source = "post.user")
-    @Mapping(target = "images", source = "post.images")
-    PostResponseDto map(Post post);
+    @Mapping(target = "owner", source = "user")
+    PostResponse map(Post post);
 }

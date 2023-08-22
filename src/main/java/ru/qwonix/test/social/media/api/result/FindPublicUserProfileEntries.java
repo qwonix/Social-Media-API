@@ -1,6 +1,6 @@
 package ru.qwonix.test.social.media.api.result;
 
-import ru.qwonix.test.social.media.api.dto.PublicUserProfileResponseDto;
+import ru.qwonix.test.social.media.api.dto.PublicUserProfileResponse;
 
 public class FindPublicUserProfileEntries {
     public sealed interface Result {
@@ -8,8 +8,7 @@ public class FindPublicUserProfileEntries {
             INSTANCE
         }
 
-        record Success(
-                PublicUserProfileResponseDto userProfileResponseDto) implements FindPublicUserProfileEntries.Result {
+        record Success(PublicUserProfileResponse userProfileResponse) implements FindPublicUserProfileEntries.Result {
         }
     }
 }
