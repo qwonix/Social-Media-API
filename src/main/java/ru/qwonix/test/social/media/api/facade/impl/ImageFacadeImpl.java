@@ -44,6 +44,9 @@ public class ImageFacadeImpl implements ImageFacade {
 
     @Override
     public UploadImageEntries.Result upload(MultipartFile image, String username) {
+        if (image.isEmpty() || image.getContentType() == null || !image.getContentType().startsWith("image/")) {
+            return UploadImageEntries.Result.FileIsNotImage.INSTANCE;
+        }
         var optionalUserProfile = userProfileService.findUserByUsername(username);
         if (optionalUserProfile.isPresent()) {
             var user = optionalUserProfile.get();

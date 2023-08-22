@@ -16,8 +16,7 @@ import ru.qwonix.test.social.media.api.TestcontainersConfiguration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Sql("/sql/image_rest_controller/test_data.sql")
 @SpringBootTest(classes = TestcontainersConfiguration.class)
@@ -25,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class ImageControllerIT {
 
+    private static final String NON_IMAGE = "sql/image_rest_controller/test_data.sql";
     private static final String IMAGE_2 = "img/image_rest_controller/image_2.png";
     private static final String IMAGE_3 = "img/image_rest_controller/image_3.png";
 
@@ -37,7 +37,8 @@ class ImageControllerIT {
 
         this.mockMvc.perform(requestBuilder)
                 .andExpectAll(
-                        status().isOk()
+                        status().isOk(),
+                        content().contentType(MediaType.IMAGE_PNG)
                 );
     }
 
@@ -80,6 +81,36 @@ class ImageControllerIT {
                 .andExpectAll(
                         status().isCreated(),
                         header().exists(HttpHeaders.LOCATION)
+                );
+    }
+
+    @WithMockUser(username = "user1", authorities = {"UPLOAD_IMAGE"})
+    @Test
+    void handleUpload_NotAnImage_ReturnErrorMessage() throws Exception {
+        var image2 = new MockMultipartFile(
+                "image",
+                "non_image.png",
+                MediaType.TEXT_PLAIN_VALUE,
+                new ClassPathResource(NON_IMAGE).getInputStream()
+        );
+
+        var requestBuilder = multipart("/api/v1/image/upload")
+                .file(image2)
+                .contentType(MediaType.IMAGE_PNG);
+
+        this.mockMvc.perform(requestBuilder)
+                .andExpectAll(
+                        status().isBadRequest(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().json("""
+                                {
+                                    "errorMessages": [{
+                                            "field": "image",
+                                            "message": "not a image"
+                                        }
+                                    ]
+                                }
+                                """)
                 );
     }
 }

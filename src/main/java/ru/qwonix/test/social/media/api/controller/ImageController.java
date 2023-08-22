@@ -29,20 +29,24 @@ public class ImageController {
         if (result instanceof FindImageEntries.Result.NotFound) {
             return ResponseEntity.notFound().build();
         } else if (result instanceof FindImageEntries.Result.Success success) {
-            return ResponseEntity.ok(success.imageResponseDto().resource());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.IMAGE_PNG)
+                    .body(success.imageResponseDto().resource());
         }
         return ResponseEntity.internalServerError().build();
     }
 
     @PreAuthorize("hasAuthority('UPLOAD_IMAGE')")
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
     public ResponseEntity<?> upload(@AuthenticationPrincipal UserDetails userDetails,
                                     UriComponentsBuilder uriComponentsBuilder,
-                                    @RequestParam("image") MultipartFile image) {
+                                    @RequestPart("image") MultipartFile image) {
         var result = imageFacade.upload(image, userDetails.getUsername());
 
         if (result instanceof UploadImageEntries.Result.UserNotFound) {
             return ResponseEntity.badRequest().build();
+        } else if (result instanceof UploadImageEntries.Result.FileIsNotImage) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("image", "not a image"));
         } else if (result instanceof UploadImageEntries.Result.Success success) {
             return ResponseEntity.created(
                     uriComponentsBuilder.path("/api/v1/image/{name}")
