@@ -11,6 +11,10 @@
   },
   "servers": [
     {
+      "url": "http://212.57.126.49",
+      "description": "Real Working Test Server"
+    },
+    {
       "url": "http://localhost",
       "description": "Generated server url"
     }

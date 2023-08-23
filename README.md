@@ -1,3 +1,4 @@
+[![Project Status](https://img.shields.io/badge/swagger-AVAILABLE_TEST_SERVER-salad.svg?style=for-the-badge)](https://qwonix.github.io/social-media-api)
 # Social Media RESTful API
 
 ## Project Objective
@@ -57,7 +58,7 @@ docker-compose -f compose.yml up -d
 
 ### Using Docker Hub Image
 
-Download [`compose.yml`](/compose.yaml) and use Docker Compose
+Download [`compose.yaml`](/compose.yaml) and use Docker Compose
 ```dockerfile
-   docker-compose -f compose.yml up -d
+docker-compose -f compose.yaml up -d
 ```
