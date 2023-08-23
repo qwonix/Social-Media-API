@@ -79,7 +79,7 @@ public class AuthenticationController {
     @GetMapping
     public ResponseEntity<AuthenticationResponse> auth(@AuthenticationPrincipal UserDetails user) {
         log.debug("Authentication request with username {}", user.getUsername());
-        var result = authenticationFacade.getAuthenticationToken(user.getUsername());
+        var result = authenticationFacade.generateAuthenticationToken(user.getUsername());
         if (result instanceof GenerateTokenEntries.Result.Success success) {
             log.debug("Authentication request success");
             return ResponseEntity.ok(success.authenticationResponse());

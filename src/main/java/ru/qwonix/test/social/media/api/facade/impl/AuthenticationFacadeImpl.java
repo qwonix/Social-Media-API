@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import ru.qwonix.test.social.media.api.dto.AuthenticationResponse;
 import ru.qwonix.test.social.media.api.dto.UserRegistrationRequest;
+import ru.qwonix.test.social.media.api.entity.Token;
 import ru.qwonix.test.social.media.api.entity.UserProfile;
 import ru.qwonix.test.social.media.api.facade.AuthenticationFacade;
 import ru.qwonix.test.social.media.api.mapper.UserProfileMapper;
@@ -39,10 +40,10 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     }
 
     @Override
-    public GenerateTokenEntries.Result getAuthenticationToken(String username) {
+    public GenerateTokenEntries.Result generateAuthenticationToken(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         try {
-            String token = authenticationService.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+            String token = authenticationService.serializeToken(new Token(userDetails.getUsername(), userDetails.getAuthorities()));
             return new GenerateTokenEntries.Result.Success(new AuthenticationResponse(token));
         } catch (Exception e) {
             return new GenerateTokenEntries.Result.Fail(e.getMessage());

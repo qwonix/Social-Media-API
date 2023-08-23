@@ -30,7 +30,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> findUsersPostsPaginated(List<UserProfile> userProfiles, int page, int size) {
+    public List<Post> findUsersPostsPaginatedAndSortedByDate(List<UserProfile> userProfiles, int page, int size) {
         return postRepository.findAllByUserIn(userProfiles,
                 PageRequest.of(
                         page,

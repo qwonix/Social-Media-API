@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
-import ru.qwonix.test.social.media.api.serivce.impl.AuthenticationServiceImpl;
+import ru.qwonix.test.social.media.api.serivce.impl.JwtAuthenticationService;
 
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true)
@@ -54,7 +54,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationService authenticationService(JwtTokenProperties jwtTokenProperties) {
-        return new AuthenticationServiceImpl(jwtTokenProperties.getSecret(), jwtTokenProperties.getTtl());
+        return new JwtAuthenticationService(jwtTokenProperties.getSecret(), jwtTokenProperties.getTtl());
     }
 
     @Bean

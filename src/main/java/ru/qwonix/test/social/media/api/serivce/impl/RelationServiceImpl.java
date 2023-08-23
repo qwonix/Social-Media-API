@@ -24,7 +24,6 @@ public class RelationServiceImpl implements RelationService {
                 .map(Relation::getTargetUser).toList();
     }
 
-
     @Override
     public Boolean isSubscriber(UserProfile source, UserProfile target) {
         return relationRepository.existsById(new RelationId(source, target, RelationType.SUBSCRIBER));

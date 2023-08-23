@@ -1,6 +1,8 @@
 package ru.qwonix.test.social.media.api.entity;
 
-import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
 
-public record Token(String subject, List<Permission> permissions) {
+import java.util.Collection;
+
+public record Token(String subject, Collection<? extends GrantedAuthority> authorities) {
 }

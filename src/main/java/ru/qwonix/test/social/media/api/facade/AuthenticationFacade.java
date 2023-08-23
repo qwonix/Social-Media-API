@@ -7,5 +7,5 @@ import ru.qwonix.test.social.media.api.result.RegisterUserEntries;
 public interface AuthenticationFacade {
     RegisterUserEntries.Result registerUser(UserRegistrationRequest registrationRequest);
 
-    GenerateTokenEntries.Result getAuthenticationToken(String username);
+    GenerateTokenEntries.Result generateAuthenticationToken(String username);
 }

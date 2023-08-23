@@ -8,6 +8,9 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+/**
+ * @see <a href="https://spring.io/guides/gs/uploading-files/">Spring Uploading Files Guide</a>
+ */
 public interface StorageService {
 
     void init();

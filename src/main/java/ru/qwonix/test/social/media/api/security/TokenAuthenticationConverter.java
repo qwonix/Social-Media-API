@@ -1,19 +1,15 @@
 package ru.qwonix.test.social.media.api.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import ru.qwonix.test.social.media.api.entity.Token;
+import ru.qwonix.test.social.media.api.exception.TokenValidationException;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
 
 @RequiredArgsConstructor
@@ -29,16 +25,12 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
         if (token != null) {
             Token accessToken;
             try {
-                accessToken = authenticationService.getAccessToken(token);
-            } catch (ExpiredJwtException e) {
-                throw new CredentialsExpiredException("Token expired");
-            } catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
-                throw new BadCredentialsException("Invalid token");
-            } catch (IllegalArgumentException e) {
-                throw new BadCredentialsException("Token string is null or empty or only whitespace");
+                accessToken = authenticationService.parseAccessToken(token);
+            } catch (TokenValidationException e) {
+                throw new BadCredentialsException("Token is invalid", e);
             }
             if (accessToken != null) {
-                return new PreAuthenticatedAuthenticationToken(accessToken.subject(), token, accessToken.permissions());
+                return new PreAuthenticatedAuthenticationToken(accessToken.subject(), token, accessToken.authorities());
             }
         }
         return null;

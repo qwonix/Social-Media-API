@@ -20,6 +20,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+/**
+ * @see <a href="https://spring.io/guides/gs/uploading-files/">Spring Uploading Files Guide</a>
+ */
 @Service
 public class FileSystemStorageService implements StorageService {
     private final Path rootLocation;

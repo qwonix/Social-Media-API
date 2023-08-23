@@ -55,7 +55,7 @@ public class ChatFacadeImpl implements ChatFacade {
             return GetChatEntries.Result.RecipientNotFound.INSTANCE;
         }
 
-        var messageResponseList = messageService.findMessagesPaginated(optionalSender.get(),
+        var messageResponseList = messageService.findMessagesPaginatedAndSortedByDate(optionalSender.get(),
                         optionalRecipient.get(),
                         page,
                         count)

@@ -69,7 +69,7 @@ public class ChatController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @Operation(summary = "Get chat messages with user", parameters = {
+    @Operation(summary = "Get chat messages with user (sorted by descending date – new first)", parameters = {
             @Parameter(name = "page", description = "Chat page"),
             @Parameter(name = "count", description = "Count of messages per page")
     }, responses = {

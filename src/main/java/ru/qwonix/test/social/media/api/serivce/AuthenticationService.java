@@ -1,17 +1,24 @@
 package ru.qwonix.test.social.media.api.serivce;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import org.springframework.security.core.GrantedAuthority;
 import ru.qwonix.test.social.media.api.entity.Token;
-
-import java.util.Collection;
+import ru.qwonix.test.social.media.api.exception.TokenValidationException;
 
 public interface AuthenticationService {
-    String generateToken(String username, Collection<? extends GrantedAuthority> authorities);
 
-    Token getAccessToken(String token) throws
-            ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException;
+    /**
+     * Serializes a Token object into a string
+     *
+     * @param token token to be serialized
+     * @return serialized token
+     */
+    String serializeToken(Token token);
+
+    /**
+     * Parses and validates an access token, returning a Token object containing authentication information
+     *
+     * @param token access token to parse and validate
+     * @return Token object containing authentication information
+     * @throws TokenValidationException if the token is invalid
+     */
+    Token parseAccessToken(String token) throws TokenValidationException;
 }
