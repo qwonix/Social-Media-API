@@ -1,14 +1,40 @@
+version: '3.8'
+
 services:
-  bd:
+  app-service:
+    image: 'qwonix/social-media-api:1.0.0'
+    container_name: social-media-api-app
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-service/social_media_api_db
+      SPRING_DATASOURCE_USERNAME: qwonix
+      SPRING_DATASOURCE_PASSWORD: qwonix_secret
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+
+      jwt_access_secret: h9dHOdBnBQ2AVk5dX8wV3zXoxBwnlhk5P4gEQXyS5SOqqrmLI8odYKxdKwJg6FNUREFE3khJVtKHigcQWRp/aA==
+      jwt_access_ttl: 1d
+
+    ports:
+      - "80:8080"
+
+    depends_on:
+      db-service:
+        condition: service_healthy
+
+  db-service:
     image: 'postgres:15'
     container_name: social-media-api-database
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d social_media_api_db", "--quiet" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
     environment:
-      POSTGRES_DB: social_media_api
-      POSTGRES_USER: qwonix
-      POSTGRES_PASSWORD: qwonix_secret
-    ports:
-      - "5430:5432"
+      POSTGRES_DB: "social_media_api_db"
+      POSTGRES_USER: "qwonix"
+      POSTGRES_PASSWORD: "qwonix_secret"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
