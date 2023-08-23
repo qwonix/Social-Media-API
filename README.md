@@ -1,5 +1,7 @@
-[![Project Status](https://img.shields.io/badge/swagger-AVAILABLE_TEST_SERVER-salad.svg?style=for-the-badge)](https://qwonix.github.io/social-media-api)
+[![Project Status](https://img.shields.io/badge/swagger-AVAILABLE_TEST_SERVER-salad.svg?style=for-the-badge)](http://212.57.126.49/swagger-ui/index.html)
 # Social Media RESTful API
+
+The application is designed as a test case.
 
 ## Project Objective
 
@@ -24,10 +26,10 @@ create and handle posts, engage with other users, subscribe, and view an activit
 * [PostgreSQL](https://www.postgresql.org/)
 * [Flyway](https://flywaydb.org/)
 * [Testcontainers](https://testcontainers.com/)
-* [Docker Compose]()
+* [Docker Compose](https://docs.docker.com/compose/)
 * [OpenAPI Documentation](https://springdoc.org/)
 
-## Exploring API Documentation with Swagger UI
+## Exploring OpenAPI Documentation with Swagger UI
 For interactive exploration of API documentation and endpoints,
 the OpenAPI specification is available and has been hosted with Swagger UI on [GitHub Pages](https://qwonix.github.io/social-media-api).
 
