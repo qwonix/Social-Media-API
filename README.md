@@ -1,4 +1,4 @@
-[![Project Status](https://img.shields.io/badge/swagger-AVAILABLE_TEST_SERVER-salad.svg?style=for-the-badge)](https://qwonix.github.io/social-media-api)
+[![Project Status](https://img.shields.io/badge/swagger-AVAILABLE_TEST_SERVER-salad.svg?style=for-the-badge)](http://212.57.126.49/swagger-ui/index.html)
 # Social Media RESTful API
 
 ## Project Objective
