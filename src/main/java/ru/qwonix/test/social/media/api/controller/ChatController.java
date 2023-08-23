@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import ru.qwonix.test.social.media.api.result.SendMessageEntries;
 import java.util.Optional;
 
 @Tag(name = "Chat", description = "Message endpoints")
+@SecurityRequirement(name = "Bearer")
 @RequiredArgsConstructor
 @Slf4j
 @RestController

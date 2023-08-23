@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import ru.qwonix.test.social.media.api.result.FindFullUserProfileEntries;
 import ru.qwonix.test.social.media.api.result.FindPublicUserProfileEntries;
 
 @Tag(name = "User", description = "User Profile endpoints")
+@SecurityRequirement(name = "Bearer")
 @Slf4j
 @RequiredArgsConstructor
 @RestController

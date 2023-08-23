@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class AuthenticationController {
     public static final ErrorResponse USERNAME_ALREADY_EXISTS = new ErrorResponse(List.of(new ErrorMessage("username", "username already exists")));
 
     private final AuthenticationFacade authenticationFacade;
+
 
     @Operation(summary = "Registration", responses = {
             @ApiResponse(responseCode = "201", description = "User successfully registered", content = {
@@ -73,7 +75,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "200", description = "User authenticated and token generated", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class))
             }),
-    })
+    }, security = @SecurityRequirement(name = "Basic"))
     @GetMapping
     public ResponseEntity<AuthenticationResponse> auth(@AuthenticationPrincipal UserDetails user) {
         log.debug("Authentication request with username {}", user.getUsername());

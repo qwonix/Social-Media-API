@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecuritySchemes;
                 email = "roman.qwonix@gmail.com",
                 url = "https://github.com/qwonix"
         ),
-                title = "OpenAPI documentation",
+                title = "Social Media API OpenAPI Docs",
                 version = "1.0"
         )
 )

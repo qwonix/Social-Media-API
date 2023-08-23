@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import ru.qwonix.test.social.media.api.result.GetFeedEntries;
 import java.util.Optional;
 
 @Tag(name = "Feed", description = "User activity feed endpoints")
+@SecurityRequirement(name = "Bearer")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
