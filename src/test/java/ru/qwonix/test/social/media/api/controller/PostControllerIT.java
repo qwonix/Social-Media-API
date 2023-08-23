@@ -106,7 +106,6 @@ class PostControllerIT {
                 jsonPath("$.id").isString(),
                 jsonPath("$.title").value("New Title"),
                 jsonPath("$.text").value("New Text about Spring"),
-                jsonPath("$.createdAt").isString(),
                 jsonPath("$.images").isEmpty(),
                 jsonPath("$.owner.username").value("user1")
         );

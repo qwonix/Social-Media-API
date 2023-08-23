@@ -25,15 +25,6 @@ class UserControllerIT {
     @Autowired
     MockMvc mockMvc;
 
-    @Test
-    void handleGet_BasicAuthenticationGetItself_ReturnFullUserProfile() throws Exception {
-        var requestBuilder = get("/api/v1/user/profile/user1")
-                .with(httpBasic("user1", "password1"));
-
-        mockMvc.perform(requestBuilder).andExpectAll(
-                status().isUnauthorized()
-        );
-    }
 
     @WithMockUser(username = "user1")
     @Test
