@@ -19,12 +19,16 @@ create and handle posts, engage with other users, subscribe, and view an activit
 * Java 17
 * [Spring Boot (REST, Web, Security)](https://spring.io/)
 * [Hibernate](https://hibernate.org/)
-* [JSON Web Token](https://jwt.io/)
+* [JSON Web Token (JWT)](https://jwt.io/)
 * [PostgreSQL](https://www.postgresql.org/)
 * [Flyway](https://flywaydb.org/)
 * [Testcontainers](https://testcontainers.com/)
 * [Docker Compose]()
 * [OpenAPI Documentation](https://springdoc.org/)
+
+## Exploring API Documentation with Swagger UI
+For interactive exploration of API documentation and endpoints,
+the OpenAPI specification is available and has been hosted with Swagger UI on [GitHub Pages](https://qwonix.github.io/social-media-api).
 
 ## Download the application
 
@@ -41,15 +45,15 @@ Before you begin, make sure you have Maven, Docker and Docker Compose installed 
 
 1. Clone the repository containing the application source code.
 2. Navigate to the project directory:
-    ``` shell
-    cd social-media-api/
-    ```
+``` shell
+cd social-media-api/
+```
 3. Build App, Docker images and start the containers using Docker Compose:
-    ``` dockerfile
-    mvn package
-    docker build -t qwonix/social-media-api:1.0.0 .
-    docker-compose -f compose.yml up -d
-    ```
+``` dockerfile
+mvn package
+docker build -t qwonix/social-media-api:1.0.0 .
+docker-compose -f compose.yml up -d
+```
 
 ### Using Docker Hub Image
 
