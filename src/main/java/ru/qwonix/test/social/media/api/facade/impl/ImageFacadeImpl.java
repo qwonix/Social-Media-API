@@ -28,7 +28,7 @@ public class ImageFacadeImpl implements ImageFacade {
 
     @Override
     public FindImageEntries.Result findByName(String name) {
-        if (imageService.existsByName(name)) {
+        if (!imageService.existsByName(name)) {
             return FindImageEntries.Result.NotFound.INSTANCE;
         }
 

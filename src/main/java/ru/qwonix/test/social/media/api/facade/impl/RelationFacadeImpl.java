@@ -54,7 +54,7 @@ public class RelationFacadeImpl implements RelationFacade {
         var source = optionalSource.get();
         var target = optionalTarget.get();
 
-        if (relationService.isFriends(source, target)) {
+        if (!relationService.isFriends(source, target)) {
             return RemoveFriendEntries.Result.UsersAreNotFriends.INSTANCE;
         }
 

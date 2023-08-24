@@ -33,7 +33,7 @@ public class ChatFacadeImpl implements ChatFacade {
 
         var sender = optionalSender.get();
         var recipient = optionalRecipient.get();
-        if (relationService.isFriends(sender, recipient)) {
+        if (!relationService.isFriends(sender, recipient)) {
             return SendMessageEntries.Result.NonFriends.INSTANCE;
         }
         var message = messageMapper.map(sendMessageRequest);
