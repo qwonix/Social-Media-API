@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app-service:
-    image: 'qwonix/social-media-api:1.0.0'
+    image: 'qwonix/social-media-api:1.0.1'
     container_name: social-media-api-app
     environment:
       SERVER_PORT: 8080

@@ -12,6 +12,7 @@ import ru.qwonix.test.social.media.api.entity.Token;
 import ru.qwonix.test.social.media.api.exception.TokenValidationException;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
@@ -30,11 +31,11 @@ public class JwtAuthenticationService implements AuthenticationService {
     private Duration accessTokenTtl;
 
     /**
-     * @param accessJwtSecret secret key used for signing JWT tokens
+     * @param accessJwtKey secret key used for signing JWT tokens
      * @param accessTokenTtl  time-to-live duration for access tokens
      */
-    public JwtAuthenticationService(@Nonnull String accessJwtSecret, Duration accessTokenTtl) {
-        this.accessJwtKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessJwtSecret));
+    public JwtAuthenticationService(SecretKey accessJwtKey, Duration accessTokenTtl) {
+        this.accessJwtKey = accessJwtKey;
         this.accessTokenTtl = accessTokenTtl;
     }
 

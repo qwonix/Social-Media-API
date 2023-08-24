@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.qwonix.test</groupId>
     <artifactId>social-media-api</artifactId>
-    <version>1.0.0-RELEASE</version>
+    <version>1.0.1</version>
     <name>Social Media API</name>
     <description>Social Media API</description>
     <properties>

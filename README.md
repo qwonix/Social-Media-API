@@ -1,4 +1,5 @@
 [![Project Status](https://img.shields.io/badge/swagger-AVAILABLE_TEST_SERVER-salad.svg?style=for-the-badge)](http://212.57.126.49/swagger-ui/index.html)
+
 # Social Media RESTful API
 
 The application is designed as a test case.
@@ -30,8 +31,33 @@ create and handle posts, engage with other users, subscribe, and view an activit
 * [OpenAPI Documentation](https://springdoc.org/)
 
 ## Exploring OpenAPI Documentation with Swagger UI
+
 For interactive exploration of API documentation and endpoints,
-the OpenAPI specification is available and has been hosted with Swagger UI on [GitHub Pages](https://qwonix.github.io/social-media-api).
+the OpenAPI specification is available and has been hosted with Swagger UI
+on [GitHub Pages](https://qwonix.github.io/social-media-api).
+
+## Configuration Properties
+
+The following configuration properties control the behavior of JWT access tokens in the application.
+
+| Property Name       | Description                                            | Default Value    | Allowed Values                                                                                                                                                               |
+|---------------------|:-------------------------------------------------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `jwt.access.secret` | Secret key for generating and verifying JWT signatures | random generated | String longer than 32 characters                                                                                                                                             |
+| `jwt.access.ttl`    | Token expiration time                                  | `1 hour`         | [Any duration](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.typesafe-configuration-properties.conversion.durations) |
+
+### Property Details
+
+#### `jwt.access.ttl`
+
+Token expiration time. The value is specified in hours. For more information on how durations are converted, refer to
+the [Spring Converting Durations Guide](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.typesafe-configuration-properties.conversion.durations).
+
+#### `jwt.access.secret`
+
+Secret key for generating and verifying JWT signatures using the HMAC-SHA algorithm. The key is encoded in base64. If
+providing a custom secret, make sure it has a length of at least 256 bits (32 bytes) as mandated by
+the [JWT JWA Specification (RFC 7518, Section 3.2)](https://tools.ietf.org/html/rfc7518#section-3.2).
+
 
 ## Download the application
 
@@ -54,7 +80,7 @@ cd social-media-api/
 3. Build App, Docker images and start the containers using Docker Compose:
 ``` dockerfile
 mvn package
-docker build -t qwonix/social-media-api:1.0.0 .
+docker build -t qwonix/social-media-api:1.0.1 .
 docker-compose -f compose.yml up -d
 ```
 
