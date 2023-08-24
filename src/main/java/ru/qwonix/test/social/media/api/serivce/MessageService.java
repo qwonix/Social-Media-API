@@ -24,5 +24,5 @@ public interface MessageService {
      * @param size         number of messages per page
      * @return list of messages
      */
-    List<Message> findMessagesPaginatedAndSortedByDate(UserProfile participant1, UserProfile participant2, Integer page, Integer size);
+    List<Message> findMessagesPaginatedAndSortedBySendingDateDesc(UserProfile participant1, UserProfile participant2, Integer page, Integer size);
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Post, UUID> {
-    Boolean existsByIdAndUserUsername(UUID id, String user);
+    boolean existsByIdAndUserUsername(UUID id, String user);
 
     List<Post> findAllByUserIn(Collection<UserProfile> user, Pageable pageable);
 }

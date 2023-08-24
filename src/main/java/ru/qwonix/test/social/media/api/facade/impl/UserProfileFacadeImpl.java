@@ -22,8 +22,8 @@ public class UserProfileFacadeImpl implements UserProfileFacade {
         if (optionalUserProfile.isEmpty()) {
             return FindFullUserProfileEntries.Result.NotFound.INSTANCE;
         }
-
         var userProfile = optionalUserProfile.get();
+
         return new FindFullUserProfileEntries.Result.Success(userProfileMapper.mapToFull(userProfile));
     }
 

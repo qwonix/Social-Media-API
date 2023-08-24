@@ -28,7 +28,7 @@ public class ImageFacadeImpl implements ImageFacade {
 
     @Override
     public FindImageEntries.Result findByName(String name) {
-        if (Boolean.FALSE.equals(imageService.existsByName(name))) {
+        if (imageService.existsByName(name)) {
             return FindImageEntries.Result.NotFound.INSTANCE;
         }
 
@@ -51,15 +51,13 @@ public class ImageFacadeImpl implements ImageFacade {
             return UploadImageEntries.Result.UserNotFound.INSTANCE;
         }
 
-        var user = optionalUserProfile.get();
-
         var filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
         try {
             storageService.store(image, filename);
         } catch (IOException e) {
             return UploadImageEntries.Result.UserNotFound.INSTANCE;
         }
-        var saved = imageService.save(new Image(filename, user));
+        var saved = imageService.save(new Image(filename, optionalUserProfile.get()));
 
         return new UploadImageEntries.Result.Success(imageMapper.map(saved));
     }

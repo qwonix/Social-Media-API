@@ -25,23 +25,23 @@ public class RelationServiceImpl implements RelationService {
     }
 
     @Override
-    public Boolean isSubscriber(UserProfile source, UserProfile target) {
+    public boolean isSubscriber(UserProfile source, UserProfile target) {
         return relationRepository.existsById(new RelationId(source, target, RelationType.SUBSCRIBER));
     }
 
     @Override
-    public Boolean isFriends(UserProfile user1, UserProfile user2) {
+    public boolean isFriends(UserProfile user1, UserProfile user2) {
         return relationRepository.existsById(new RelationId(user1, user2, RelationType.SUBSCRIBER)) &&
                relationRepository.existsById(new RelationId(user2, user1, RelationType.SUBSCRIBER));
     }
 
     @Override
-    public void addSubscriber(UserProfile source, UserProfile target) {
+    public void subscribe(UserProfile source, UserProfile target) {
         relationRepository.save(new Relation(source, target, RelationType.SUBSCRIBER));
     }
 
     @Override
-    public void removeSubscriber(UserProfile source, UserProfile target) {
+    public void unsubscribe(UserProfile source, UserProfile target) {
         relationRepository.delete(new Relation(source, target, RelationType.SUBSCRIBER));
     }
 }

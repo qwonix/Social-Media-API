@@ -21,28 +21,28 @@ public interface RelationService {
      * @param target target user profile
      * @return {@code true} if the source user is a subscriber of the target user, {@code false} otherwise
      */
-    Boolean isSubscriber(UserProfile source, UserProfile target);
+    boolean isSubscriber(UserProfile source, UserProfile target);
 
     /**
      * Checks if the two specified users are friends
      *
-     * @return {@code true} if the two users are friends, {@code false} otherwise
+     * @return {@code true} if users are friends, {@code false} otherwise
      */
-    Boolean isFriends(UserProfile user1, UserProfile user2);
+    boolean isFriends(UserProfile user1, UserProfile user2);
 
     /**
-     * Adds a subscription from the source user to the target user
+     * Subscribes the source user to the target user
      *
-     * @param source source user profile
-     * @param target target user profile
+     * @param source the user who subscribes
+     * @param target the user to subscribe to
      */
-    void addSubscriber(UserProfile source, UserProfile target);
+    void subscribe(UserProfile source, UserProfile target);
 
     /**
-     * Removes a subscription from the source user to the target user
+     * Unsubscribes the source user from the target user
      *
-     * @param source source user profile
-     * @param target target user profile
+     * @param source the user who unsubscribes
+     * @param target the user to unsubscribe from
      */
-    void removeSubscriber(UserProfile source, UserProfile target);
+    void unsubscribe(UserProfile source, UserProfile target);
 }

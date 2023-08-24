@@ -22,7 +22,7 @@ public interface UserProfileService extends UserDetailsService {
      * @param username username to check
      * @return {@code true} if a user profile with the given username exists, {@code false} otherwise
      */
-    Boolean existsByUsername(String username);
+    boolean existsByUsername(String username);
 
     /**
      * Checks if a user profile with the specified email exists
@@ -30,7 +30,7 @@ public interface UserProfileService extends UserDetailsService {
      * @param email email to check
      * @return {@code true} if a user profile with the given email exists, {@code false} otherwise
      */
-    Boolean existsByEmail(String email);
+    boolean existsByEmail(String email);
 
     /**
      * Retrieves a user profile by the specified username

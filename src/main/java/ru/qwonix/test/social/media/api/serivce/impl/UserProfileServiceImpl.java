@@ -30,12 +30,12 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Boolean existsByUsername(String username) {
+    public boolean existsByUsername(String username) {
         return userProfileRepository.existsByUsername(username);
     }
 
     @Override
-    public Boolean existsByEmail(String email) {
+    public boolean existsByEmail(String email) {
         return userProfileRepository.existsByEmail(email);
     }
 

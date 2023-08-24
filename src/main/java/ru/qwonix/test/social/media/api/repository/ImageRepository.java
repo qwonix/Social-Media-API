@@ -6,9 +6,9 @@ import ru.qwonix.test.social.media.api.entity.Image;
 import java.util.Optional;
 
 public interface ImageRepository extends JpaRepository<Image, String> {
-    Boolean existsByImageNameAndUserUsername(String imageName, String username);
+    boolean existsByImageNameAndUserUsername(String imageName, String username);
 
     Optional<Image> findByImageName(String name);
 
-    Boolean existsByImageName(String name);
+    boolean existsByImageName(String name);
 }

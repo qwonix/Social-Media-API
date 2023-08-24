@@ -19,7 +19,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean existsByName(String name) {
+    public boolean existsByName(String name) {
         return imageRepository.existsByImageName(name);
     }
 
@@ -29,7 +29,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean isImageOwner(String imageName, String username) {
+    public boolean isImageOwner(String imageName, String username) {
         return imageRepository.existsByImageNameAndUserUsername(imageName, username);
     }
 }

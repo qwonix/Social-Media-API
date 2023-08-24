@@ -3,7 +3,6 @@ package ru.qwonix.test.social.media.api.facade.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.qwonix.test.social.media.api.dto.SendMessageRequest;
-import ru.qwonix.test.social.media.api.entity.Message;
 import ru.qwonix.test.social.media.api.facade.ChatFacade;
 import ru.qwonix.test.social.media.api.mapper.MessageMapper;
 import ru.qwonix.test.social.media.api.result.GetChatEntries;
@@ -34,10 +33,10 @@ public class ChatFacadeImpl implements ChatFacade {
 
         var sender = optionalSender.get();
         var recipient = optionalRecipient.get();
-        if (Boolean.FALSE.equals(relationService.isFriends(sender, recipient))) {
+        if (relationService.isFriends(sender, recipient)) {
             return SendMessageEntries.Result.NonFriends.INSTANCE;
         }
-        Message message = messageMapper.map(sendMessageRequest);
+        var message = messageMapper.map(sendMessageRequest);
         message.setSender(sender);
         message.setRecipient(recipient);
 
@@ -55,7 +54,7 @@ public class ChatFacadeImpl implements ChatFacade {
             return GetChatEntries.Result.RecipientNotFound.INSTANCE;
         }
 
-        var messageResponseList = messageService.findMessagesPaginatedAndSortedByDate(optionalSender.get(),
+        var messageResponseList = messageService.findMessagesPaginatedAndSortedBySendingDateDesc(optionalSender.get(),
                         optionalRecipient.get(),
                         page,
                         count)

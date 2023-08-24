@@ -28,15 +28,15 @@ public class RelationFacadeImpl implements RelationFacade {
         var source = optionalSource.get();
         var target = optionalTarget.get();
 
-        if (Boolean.TRUE.equals(relationService.isFriends(source, target))) {
+        if (relationService.isFriends(source, target)) {
             return AddFriendEntries.Result.UsersAreAlreadyFriends.INSTANCE;
         }
 
-        if (Boolean.TRUE.equals(relationService.isSubscriber(source, target))) {
+        if (relationService.isSubscriber(source, target)) {
             return AddFriendEntries.Result.RepeatedRequest.INSTANCE;
         }
 
-        relationService.addSubscriber(source, target);
+        relationService.subscribe(source, target);
         return AddFriendEntries.Result.Success.INSTANCE;
     }
 
@@ -54,11 +54,11 @@ public class RelationFacadeImpl implements RelationFacade {
         var source = optionalSource.get();
         var target = optionalTarget.get();
 
-        if (Boolean.FALSE.equals(relationService.isFriends(source, target))) {
+        if (relationService.isFriends(source, target)) {
             return RemoveFriendEntries.Result.UsersAreNotFriends.INSTANCE;
         }
 
-        relationService.removeSubscriber(source, target);
+        relationService.unsubscribe(source, target);
         return RemoveFriendEntries.Result.Success.INSTANCE;
     }
 }

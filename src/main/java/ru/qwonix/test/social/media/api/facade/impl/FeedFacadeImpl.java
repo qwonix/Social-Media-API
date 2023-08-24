@@ -28,7 +28,7 @@ public class FeedFacadeImpl implements FeedFacade {
         }
 
         var userSubscriptions = relationService.findAllSubscriptions(optionalUser.get());
-        var userSubscriptionsPosts = postService.findUsersPostsPaginatedAndSortedByDate(userSubscriptions, page, size).stream()
+        var userSubscriptionsPosts = postService.findUsersPostsPaginatedAndSortedByCtreaitionDateDesc(userSubscriptions, page, size).stream()
                 .map(postMapper::map).toList();
         return new GetFeedEntries.Result.Success(new Feed(userSubscriptionsPosts));
     }

@@ -20,7 +20,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      * @return {@code true} if the post belongs to the user or if the post does not exist, {@code false} otherwise.
      */
     @Override
-    public Boolean isPostOwnerOrIsPostNotFound(UUID postId, String username) {
+    public boolean isPostOwnerOrIsPostNotFound(UUID postId, String username) {
         return postService.isPostOwner(postId, username) || !postService.existsById(postId);
     }
 
@@ -30,7 +30,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      * @return {@code true} if the image belongs to the user or if the image does not exist, {@code false} otherwise.
      */
     @Override
-    public Boolean isImageOwnerOrIsImageNotFound(String imageName, String username) {
+    public boolean isImageOwnerOrIsImageNotFound(String imageName, String username) {
         return imageService.isImageOwner(imageName, username) || !imageService.existsByName(imageName);
     }
 }

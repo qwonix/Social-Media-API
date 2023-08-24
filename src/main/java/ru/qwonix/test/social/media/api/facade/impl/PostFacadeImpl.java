@@ -61,7 +61,7 @@ public class PostFacadeImpl implements PostFacade {
 
     @Override
     public DeletePostEntries.Result delete(UUID id) {
-        if (Boolean.FALSE.equals(postService.existsById(id))) {
+        if (postService.existsById(id)) {
             return DeletePostEntries.Result.NotFound.INSTANCE;
         }
         postService.delete(id);

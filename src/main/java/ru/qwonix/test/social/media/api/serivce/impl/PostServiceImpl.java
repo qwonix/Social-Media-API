@@ -20,17 +20,17 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
     @Override
-    public Boolean existsById(UUID id) {
+    public boolean existsById(UUID id) {
         return postRepository.existsById(id);
     }
 
     @Override
-    public Boolean isPostOwner(UUID postId, String username) {
+    public boolean isPostOwner(UUID postId, String username) {
         return postRepository.existsByIdAndUserUsername(postId, username);
     }
 
     @Override
-    public List<Post> findUsersPostsPaginatedAndSortedByDate(List<UserProfile> userProfiles, int page, int size) {
+    public List<Post> findUsersPostsPaginatedAndSortedByCtreaitionDateDesc(List<UserProfile> userProfiles, int page, int size) {
         return postRepository.findAllByUserIn(userProfiles,
                 PageRequest.of(
                         page,

@@ -39,7 +39,7 @@ public interface PostService {
     /**
      * @return {@code true} if a post with the given id exists, {@code false} otherwise.
      */
-    Boolean existsById(UUID id);
+    boolean existsById(UUID id);
 
     /**
      * Checks if the specified user is the owner of the given post.
@@ -48,7 +48,7 @@ public interface PostService {
      * @param username username of the user to check
      * @return {@code true} if the user is the owner of the post, {@code false} otherwise or if post was not found
      */
-    Boolean isPostOwner(UUID postId, String username);
+    boolean isPostOwner(UUID postId, String username);
 
     /**
      * Retrieves a paginated list of posts created by the specified users
@@ -59,5 +59,5 @@ public interface PostService {
      * @param size         number of posts per page
      * @return list of posts
      */
-    List<Post> findUsersPostsPaginatedAndSortedByDate(List<UserProfile> userProfiles, int page, int size);
+    List<Post> findUsersPostsPaginatedAndSortedByCtreaitionDateDesc(List<UserProfile> userProfiles, int page, int size);
 }

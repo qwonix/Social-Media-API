@@ -21,7 +21,7 @@ public interface ImageService {
      * @param name name of the image to check
      * @return {@code true} if an image with the given name exists, {@code false} otherwise
      */
-    Boolean existsByName(String name);
+    boolean existsByName(String name);
 
     /**
      * Finds an image by its name
@@ -38,5 +38,5 @@ public interface ImageService {
      * @param username  username of the user to check
      * @return {@code true} if the user is the owner of the image, {@code false} otherwise or if image was not found
      */
-    Boolean isImageOwner(String imageName, String username);
+    boolean isImageOwner(String imageName, String username);
 }

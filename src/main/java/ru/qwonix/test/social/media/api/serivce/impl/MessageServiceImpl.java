@@ -23,7 +23,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> findMessagesPaginatedAndSortedByDate(UserProfile participant1, UserProfile participant2, Integer page, Integer size) {
+    public List<Message> findMessagesPaginatedAndSortedBySendingDateDesc(UserProfile participant1, UserProfile participant2, Integer page, Integer size) {
         return messageRepository.findAllBySenderAndRecipient(participant1, participant2,
                 PageRequest.of(
                         page,
