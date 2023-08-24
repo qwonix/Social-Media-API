@@ -31,7 +31,7 @@ class RelationControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void addFriendHandler_NewFriendRequest_ResponseStatusIsCreated() throws Exception {
+    void handleAddFriend_NewFriendRequest_ReturnsSuccess() throws Exception {
         var requestBuilder = post("/api/v1/user/" + USER_3_USERNAME + "/friend");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -41,7 +41,7 @@ class RelationControllerIT {
 
     @WithMockUser(username = "user2")
     @Test
-    void addFriendHandler_RepeatedRequest_ResponseStatusIsConflict() throws Exception {
+    void handleAddFriend_RepeatedRequest_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/user/" + USER_3_USERNAME + "/friend");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -62,7 +62,7 @@ class RelationControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void addFriendHandler_UsersAreAlreadyFriends_ResponseStatusIsConflict() throws Exception {
+    void handleAddFriend_UsersAreAlreadyFriends_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/user/" + USER_2_USERNAME + "/friend");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -83,7 +83,7 @@ class RelationControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void addFriendHandler_NonExistentUsername_ResponseStatusIsNotFound() throws Exception {
+    void handleAddFriend_NonExistentUsername_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/user/" + NON_EXISTENT_USERNAME + "/friend");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -104,7 +104,7 @@ class RelationControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void removeFriendHandler_UsersAreFriends_ResponseStatusIsOk() throws Exception {
+    void handleRemoveFriend_UsersAreFriends_ReturnsSuccess() throws Exception {
         var requestBuilder = delete("/api/v1/user/" + USER_2_USERNAME + "/friend");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -114,7 +114,7 @@ class RelationControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void removeFriendHandler_UsersAreNotFriends_ResponseStatusIsNotFound() throws Exception {
+    void handleRemoveFriend_UsersAreNotFriends_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = delete("/api/v1/user/" + USER_3_USERNAME + "/friend");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -135,7 +135,7 @@ class RelationControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void removeFriendHandler_NonExistentUsername_ResponseStatusIsNotFound() throws Exception {
+    void handleRemoveFriend_NonExistentUsername_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = delete("/api/v1/user/" + NON_EXISTENT_USERNAME + "/friend");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(

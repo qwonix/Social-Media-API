@@ -32,7 +32,7 @@ class ImageControllerIT {
     MockMvc mockMvc;
 
     @Test
-    void handleGet_ValidImage_ReturnValidResponse() throws Exception {
+    void handleGetByName_ValidImageName_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/image/ca444eab-30e7-4bdc-ac1e-a2fe48db8f60_image_1.png");
 
         this.mockMvc.perform(requestBuilder)
@@ -44,7 +44,7 @@ class ImageControllerIT {
 
     @WithMockUser(username = "user1", authorities = {"UPLOAD_IMAGE"})
     @Test
-    void handleUpload_ValidImage_ReturnValidResponse() throws Exception {
+    void handleUploadNewImage_ValidImage_ReturnsValidResponse() throws Exception {
         var image3 = new MockMultipartFile(
                 "image",
                 "image.png",
@@ -65,7 +65,7 @@ class ImageControllerIT {
 
     @WithMockUser(username = "user1", authorities = {"UPLOAD_IMAGE"})
     @Test
-    void handleUpload_DuplicateImageName_ReturnValidResponse() throws Exception {
+    void handleUploadNewImage_DuplicateImageName_ReturnsValidResponse() throws Exception {
         var image2 = new MockMultipartFile(
                 "image",
                 "image_2.png",
@@ -86,7 +86,7 @@ class ImageControllerIT {
 
     @WithMockUser(username = "user1", authorities = {"UPLOAD_IMAGE"})
     @Test
-    void handleUpload_NotAnImage_ReturnErrorMessage() throws Exception {
+    void handleUploadNewImage_NotAnImage_ReturnsValidErrorResponse() throws Exception {
         var image2 = new MockMultipartFile(
                 "image",
                 "non_image.png",

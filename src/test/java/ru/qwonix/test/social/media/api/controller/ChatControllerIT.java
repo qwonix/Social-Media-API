@@ -31,7 +31,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleSendMessage_ValidMessage_ReturnValidResponse() throws Exception {
+    void handleSendMessage_ReturnsValidResponse() throws Exception {
         var requestBuilder = post("/api/v1/chat/" + USER_2_USERNAME + "/message")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -52,7 +52,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleSendMessage_EmptyText_ReturnErrorMessage() throws Exception {
+    void handleSendMessage_EmptyText_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/chat/" + USER_2_USERNAME + "/message")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -79,7 +79,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleSendMessage_RecipientNotFound_ReturnErrorMessage() throws Exception {
+    void handleSendMessage_RecipientNotFound_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/chat/" + NON_EXISTENT_USERNAME + "/message")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -107,7 +107,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user2")
     @Test
-    void handleSendMessage_UsersAreNonFriends_ReturnErrorMessage() throws Exception {
+    void handleSendMessage_UsersAreNonFriends_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/chat/" + USER_3_USERNAME + "/message")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -134,7 +134,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGetChat_AllMessages_ReturnValidResponse() throws Exception {
+    void handleGetChat_AllMessagesByUser1_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/chat/" + USER_2_USERNAME);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -204,7 +204,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user2")
     @Test
-    void handleGetChat_AllMessagesRequestByUser2_ReturnValidResponse() throws Exception {
+    void handleGetChat_AllMessagesRequestByUser2_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/chat/" + USER_1_USERNAME);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -274,7 +274,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGetChat_UsingPageAndSize_ReturnValidResponse() throws Exception {
+    void handleGetChat_UsingPageAndSize_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/chat/" + USER_2_USERNAME)
                 .queryParam("page", "0")
                 .queryParam("count", "2");
@@ -310,7 +310,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGetChat_UsingPageAndSize2_ReturnValidResponse() throws Exception {
+    void handleGetChat_UsingPageAndSize2_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/chat/" + USER_2_USERNAME)
                 .queryParam("page", "1")
                 .queryParam("count", "2");
@@ -345,7 +345,7 @@ class ChatControllerIT {
 
     @WithMockUser(username = "user2")
     @Test
-    void handleGetChat_EmptyChat_ReturnValidResponse() throws Exception {
+    void handleGetChat_EmptyChat_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/chat/" + USER_3_USERNAME);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(

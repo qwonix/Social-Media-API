@@ -41,7 +41,7 @@ public class PostController {
             })
     })
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> get(@PathVariable("id") UUID id) {
+    public ResponseEntity<PostResponse> getById(@PathVariable("id") UUID id) {
         log.debug("Get post with id {}", id);
         var result = postFacade.find(id);
         if (result instanceof FindPostEntries.Result.NotFound) {
@@ -59,9 +59,9 @@ public class PostController {
             })
     })
     @PostMapping
-    public ResponseEntity<PostResponse> create(@AuthenticationPrincipal UserDetails userDetails,
-                                               UriComponentsBuilder uriComponentsBuilder,
-                                               @RequestBody @Valid CreatePostRequest createPostRequest) {
+    public ResponseEntity<PostResponse> createNewPost(@AuthenticationPrincipal UserDetails userDetails,
+                                                      UriComponentsBuilder uriComponentsBuilder,
+                                                      @RequestBody @Valid CreatePostRequest createPostRequest) {
         log.debug("Post creation request title {}", createPostRequest.title());
         var result = postFacade.create(createPostRequest, userDetails.getUsername());
         if (result instanceof CreatePostEntries.Result.Success success) {
@@ -83,8 +83,8 @@ public class PostController {
     })
     @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name)")
     @PatchMapping("/{id}")
-    public ResponseEntity<PostResponse> update(@PathVariable("id") UUID id,
-                                               @RequestBody @Valid UpdatePostRequest updatePostRequest) {
+    public ResponseEntity<PostResponse> updateById(@PathVariable("id") UUID id,
+                                                   @RequestBody @Valid UpdatePostRequest updatePostRequest) {
         log.debug("Post update request id {}", id);
         var result = postFacade.update(id, updatePostRequest);
         if (result instanceof UpdatePostEntries.Result.NotFound) {
@@ -105,7 +105,7 @@ public class PostController {
     })
     @PreAuthorize("@authorizationFacadeImpl.isPostOwnerOrIsPostNotFound(#id, authentication.name)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") UUID id) {
+    public ResponseEntity<?> deleteById(@PathVariable("id") UUID id) {
         log.debug("Post delete request id {}", id);
         var result = postFacade.delete(id);
         if (result instanceof DeletePostEntries.Result.NotFound) {
@@ -143,11 +143,11 @@ public class PostController {
             return ResponseEntity.notFound().build();
         } else if (result instanceof AttachImageToPostEntries.Result.ImageNotFound) {
             return ResponseEntity.badRequest().body(
-                    new ErrorResponse("imageName", "Image does not exist. In order to attach an image, you need to upload it")
+                    new ErrorResponse("imageName", "image does not exist. In order to attach an image, you need to upload it")
             );
         } else if (result instanceof AttachImageToPostEntries.Result.ImageAlreadyAttached) {
             return ResponseEntity.badRequest().body(
-                    new ErrorResponse("imageName", "The image has already been attached to the post")
+                    new ErrorResponse("imageName", "the image has already been attached to the post")
             );
         } else if (result instanceof AttachImageToPostEntries.Result.Success success) {
             return ResponseEntity.created(uriComponentsBuilder
@@ -182,11 +182,11 @@ public class PostController {
             return ResponseEntity.notFound().build();
         } else if (result instanceof DetachImageFromPostEntries.Result.ImageNotFound) {
             return ResponseEntity.badRequest().body(
-                    new ErrorResponse("imageName", "Image does not exist. In order to detach an image, you need to upload and attach it")
+                    new ErrorResponse("imageName", "image does not exist. In order to detach an image, you need to upload and attach it")
             );
         } else if (result instanceof DetachImageFromPostEntries.Result.ImageNotAttached) {
             return ResponseEntity.badRequest().body(
-                    new ErrorResponse("imageName", "The image is not attached to the post")
+                    new ErrorResponse("imageName", "the image is not attached to the post")
             );
         } else if (result instanceof DetachImageFromPostEntries.Result.Success success) {
             return ResponseEntity.ok(success.postResponse());

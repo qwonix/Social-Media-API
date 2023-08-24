@@ -26,7 +26,7 @@ class AuthenticationControllerIT {
     MockMvc mockMvc;
 
     @Test
-    void handleAuth_BasicAuthentication_ReturnValidToken() throws Exception {
+    void handleGenerateAuthenticationToken_BasicAuthentication_ReturnsAuthenticationToken() throws Exception {
         var requestBuilder = get("/api/v1/auth")
                 .with(httpBasic("user1", "password1"));
 
@@ -38,7 +38,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_ReturnSuccess() throws Exception {
+    void handleRegisterNewUser_ReturnsSuccess() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -60,7 +60,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_DuplicateUsername_ReturnConflict() throws Exception {
+    void handleRegisterNewUser_DuplicateUsername_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -88,7 +88,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_DuplicateEmail_ReturnConflict() throws Exception {
+    void handleRegisterNewUser_DuplicateEmail_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -117,7 +117,7 @@ class AuthenticationControllerIT {
 
 
     @Test
-    void handleRegister_EmailValidationError_ReturnErrorMessage() throws Exception {
+    void handleRegisterNewUser_EmailValidationError_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -145,7 +145,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_UsernameIsTooShort_ReturnErrorMessage() throws Exception {
+    void handleRegisterNewUser_UsernameIsTooShort_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -173,7 +173,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_UsernameIsTooLong_ReturnErrorMessage() throws Exception {
+    void handleRegisterNewUser_UsernameIsTooLong_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -201,7 +201,7 @@ class AuthenticationControllerIT {
     }
 
     @Test
-    void handleRegister_PasswordIsTooShort_ReturnErrorMessage() throws Exception {
+    void handleRegisterNewUser_PasswordIsTooShort_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""

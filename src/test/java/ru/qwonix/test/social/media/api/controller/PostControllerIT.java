@@ -23,13 +23,14 @@ class PostControllerIT {
 
     private static final String POST_1_ID = "ecad0472-f529-4daa-afde-cd539ebc9391";
     private static final String POST_2_ID = "87dbb176-217f-4b68-b6c4-126affcc9a47";
+    public static final String NON_EXISTENT_POST_ID = "f3ec24d6-0597-4241-af31-ea524c65c333";
 
     @Autowired
     MockMvc mockMvc;
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGet_ReturnValidResponse() throws Exception {
+    void handleGetById_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/post/" + POST_1_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -55,7 +56,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGet_AnotherUsersPost_ReturnValidResponse() throws Exception {
+    void handleGetById_AnotherUsersPost_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/post/" + POST_2_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -78,8 +79,8 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGet_IdIsInvalid_ReturnNotFound() throws Exception {
-        var requestBuilder = get("/api/v1/post/f3ec24d6-0597-4241-af31-ea524c65c333");
+    void handleGetById_InvalidId_ReturnsNotFound() throws Exception {
+        var requestBuilder = get("/api/v1/post/" + NON_EXISTENT_POST_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound()
@@ -88,7 +89,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleCreate_DataIsValid_ReturnValidResponse() throws Exception {
+    void handleCreateNewPost_ValidData_ReturnsValidResponse() throws Exception {
         var requestBuilder = post("/api/v1/post")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -113,7 +114,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleCreate_TitleIsTooLong_ReturnErrorMessage() throws Exception {
+    void handleCreateNewPost_TitleIsTooLong_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/post")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -142,7 +143,31 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleUpdate_NewTitle_ReturnValidResponse() throws Exception {
+    void handleCreateNewPost_TextIsEmpty_ReturnsValidResponse() throws Exception {
+        var requestBuilder = post("/api/v1/post")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "title" : "New Title"
+                        }
+                        """);
+
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isCreated(),
+                header().exists(HttpHeaders.LOCATION),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$.id").isString(),
+                jsonPath("$.title").value("New Title"),
+                jsonPath("$.text").doesNotExist(),
+                jsonPath("$.images").isEmpty(),
+                jsonPath("$.owner.username").value("user1")
+        );
+    }
+    
+    @WithMockUser(username = "user1")
+    @Test
+    void handleUpdateById_UpdateTitle_ReturnsValidResponse() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -175,7 +200,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleUpdate_TitleIsTooLong_ReturnErrorMessage() throws Exception {
+    void handleUpdateById_TitleIsTooLong_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -203,7 +228,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleUpdate_NewText_ReturnValidResponse() throws Exception {
+    void handleUpdateById_UpdateText_ReturnsValidResponse() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -236,7 +261,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleUpdate_NewTitleAndText_ReturnValidResponse() throws Exception {
+    void handleUpdateById_UpdateTitleAndText_ReturnsValidResponse() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -271,7 +296,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleUpdate_AnotherUsersPost_ReturnErrorMessage() throws Exception {
+    void handleUpdateById_AnotherUsersPost_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = patch("/api/v1/post/" + POST_2_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -289,7 +314,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleDelete_ReturnSuccess() throws Exception {
+    void handleDeleteById_ReturnsSuccess() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_1_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -299,7 +324,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleDelete_AnotherUsersPost_ReturnErrorMessage() throws Exception {
+    void handleDeleteById_AnotherUsersPost_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_2_ID);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -310,7 +335,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleAttachImage__Success() throws Exception {
+    void handleAttachImage_ReturnsSuccess() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -346,7 +371,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleAttachImage_ImageAlreadyAttached_ReturnErrorMessage() throws Exception {
+    void handleAttachImage_ImageAlreadyAttached_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -362,7 +387,7 @@ class PostControllerIT {
                         {
                             "errorMessages": [{
                                     "field": "imageName",
-                                    "message": "The image has already been attached to the post"
+                                    "message": "the image has already been attached to the post"
                                 }
                             ]
                         }
@@ -372,7 +397,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleAttachImage_ImageDoseNotExists_ReturnErrorMessage() throws Exception {
+    void handleAttachImage_ImageDoseNotExists_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -388,7 +413,7 @@ class PostControllerIT {
                         {
                             "errorMessages": [{
                                     "field": "imageName",
-                                    "message": "Image does not exist. In order to attach an image, you need to upload it"
+                                    "message": "image does not exist. In order to attach an image, you need to upload it"
                                 }
                             ]
                         }
@@ -398,7 +423,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleAttachImage_PostDoseNotExists_ReturnErrorMessage() throws Exception {
+    void handleAttachImage_PostDoseNotExists_ReturnsValidErrorResponse() throws Exception {
         final var POST_ID = "65955315-735b-4d87-81a9-cc48e1ed638b";
         var requestBuilder = post("/api/v1/post/" + POST_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -416,7 +441,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleAttachImage_ImageBelongsToAnotherUser_ReturnErrorMessage() throws Exception {
+    void handleAttachImage_ImageBelongsToAnotherUser_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = post("/api/v1/post/" + POST_1_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -433,7 +458,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleDetachImage__Success() throws Exception {
+    void handleDetachImage_ReturnsSuccess() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -463,7 +488,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleDetachImage_ImageNotAttached_ReturnErrorMessage() throws Exception {
+    void handleDetachImage_ImageNotAttached_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -479,7 +504,7 @@ class PostControllerIT {
                         {
                             "errorMessages": [{
                                     "field": "imageName",
-                                    "message": "The image is not attached to the post"
+                                    "message": "the image is not attached to the post"
                                 }
                             ]
                         }
@@ -489,7 +514,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleDetachImage_ImageDoseNotExists_ReturnErrorMessage() throws Exception {
+    void handleDetachImage_ImageDoseNotExists_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_1_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -505,7 +530,7 @@ class PostControllerIT {
                         {
                             "errorMessages": [{
                                     "field": "imageName",
-                                    "message": "Image does not exist. In order to detach an image, you need to upload and attach it"
+                                    "message": "image does not exist. In order to detach an image, you need to upload and attach it"
                                 }
                             ]
                         }
@@ -515,7 +540,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleDetachImage_PostDoseNotExists_ReturnErrorMessage() throws Exception {
+    void handleDetachImage_PostDoseNotExists_ReturnsValidErrorResponse() throws Exception {
         final var POST_ID = "65955315-735b-4d87-81a9-cc48e1ed638b";
         var requestBuilder = delete("/api/v1/post/" + POST_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -532,7 +557,7 @@ class PostControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleDetachImage_ImageBelongsToAnotherPost_ReturnErrorMessage() throws Exception {
+    void handleDetachImage_ImageBelongsToAnotherPost_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = delete("/api/v1/post/" + POST_2_ID + "/image")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""

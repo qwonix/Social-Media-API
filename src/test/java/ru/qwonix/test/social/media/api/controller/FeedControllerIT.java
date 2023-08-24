@@ -26,7 +26,7 @@ class FeedControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGetFeed_WithoutParams_ReturnValidResponse() throws Exception {
+    void handleGetFeed_WithoutParams_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/feed");
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
@@ -77,7 +77,7 @@ class FeedControllerIT {
 
     @WithMockUser(username = "user2")
     @Test
-    void handleGetFeed_OnePost_ReturnValidResponse() throws Exception {
+    void handleGetFeed_SinglePost_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/feed")
                 .queryParam("page", "0")
                 .queryParam("count", "10");
@@ -106,7 +106,7 @@ class FeedControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGetFeed_Page1Size2_ReturnValidResponse() throws Exception {
+    void handleGetFeed_Page1Size2_ReturnsValidResponse() throws Exception {
         var requestBuilder = get("/api/v1/feed")
                 .queryParam("page", "1")
                 .queryParam("count", "2");

@@ -37,7 +37,7 @@ public class UserController {
             })
     })
     @GetMapping("/{username}")
-    public ResponseEntity<?> get(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String username) {
+    public ResponseEntity<?> getByUsername(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String username) {
         log.debug("Get user with username {}", username);
         if (username.equals(userDetails.getUsername())) {
             var result = userProfileFacade.findFullByUsername(username);

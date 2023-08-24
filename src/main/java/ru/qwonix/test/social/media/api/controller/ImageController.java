@@ -38,7 +38,7 @@ public class ImageController {
             @ApiResponse(responseCode = "404", description = "Image not found")
     })
     @GetMapping("/{name}")
-    public ResponseEntity<?> get(@PathVariable String name) {
+    public ResponseEntity<?> getByName(@PathVariable String name) {
         var result = imageFacade.findByName(name);
 
         if (result instanceof FindImageEntries.Result.NotFound) {
@@ -59,9 +59,9 @@ public class ImageController {
     }, security = @SecurityRequirement(name = "Basic"))
     @PreAuthorize("hasAuthority('UPLOAD_IMAGE')")
     @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
-    public ResponseEntity<?> upload(@AuthenticationPrincipal UserDetails userDetails,
-                                    UriComponentsBuilder uriComponentsBuilder,
-                                    @RequestPart("image") MultipartFile image) {
+    public ResponseEntity<?> uploadNewImage(@AuthenticationPrincipal UserDetails userDetails,
+                                            UriComponentsBuilder uriComponentsBuilder,
+                                            @RequestPart("image") MultipartFile image) {
         var result = imageFacade.upload(image, userDetails.getUsername());
 
         if (result instanceof UploadImageEntries.Result.UserNotFound) {

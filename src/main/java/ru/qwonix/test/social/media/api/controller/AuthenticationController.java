@@ -45,7 +45,7 @@ public class AuthenticationController {
             }),
     })
     @PostMapping("/register")
-    public ResponseEntity<?> register(UriComponentsBuilder uriComponentsBuilder, @RequestBody @Valid UserRegistrationRequest registrationRequest) {
+    public ResponseEntity<?> registerNewUser(UriComponentsBuilder uriComponentsBuilder, @RequestBody @Valid UserRegistrationRequest registrationRequest) {
         log.debug("Registration request with username {}", registrationRequest.username());
         var result = authenticationFacade.registerUser(registrationRequest);
 
@@ -77,7 +77,7 @@ public class AuthenticationController {
             }),
     }, security = @SecurityRequirement(name = "Basic"))
     @GetMapping
-    public ResponseEntity<AuthenticationResponse> auth(@AuthenticationPrincipal UserDetails user) {
+    public ResponseEntity<AuthenticationResponse> generateAuthenticationToken(@AuthenticationPrincipal UserDetails user) {
         log.debug("Authentication request with username {}", user.getUsername());
         var result = authenticationFacade.generateAuthenticationToken(user.getUsername());
         if (result instanceof GenerateTokenEntries.Result.Success success) {

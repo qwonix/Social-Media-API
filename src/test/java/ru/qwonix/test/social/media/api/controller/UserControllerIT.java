@@ -27,7 +27,7 @@ class UserControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGet_TokenAuthenticationGetItself_ReturnFullUserProfile() throws Exception {
+    void handleGetByUsername_GetItself_ReturnsFullUserProfile() throws Exception {
         var requestBuilder = get("/api/v1/user/profile/user1");
 
         mockMvc.perform(requestBuilder).andExpectAll(
@@ -45,7 +45,7 @@ class UserControllerIT {
 
     @WithMockUser(username = "user1")
     @Test
-    void handleGet_TokenAuthenticationGetAnotherUser_ReturnPublicUserProfile() throws Exception {
+    void handleGetByUsername_GetAnotherUser_ReturnsPublicUserProfile() throws Exception {
         var requestBuilder = get("/api/v1/user/profile/user2");
 
         mockMvc.perform(requestBuilder).andExpectAll(
@@ -60,7 +60,7 @@ class UserControllerIT {
     }
 
     @Test
-    void handleGet_NoAuthentication_ReturnUnauthorized() throws Exception {
+    void handleGetByUsername_NoAuthentication_ReturnsValidErrorResponse() throws Exception {
         var requestBuilder = get("/api/v1/user/profile/user1");
 
         mockMvc.perform(requestBuilder).andExpectAll(
