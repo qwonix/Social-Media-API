@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.qwonix.test.social.media.api.dto.ErrorResponse;
 import ru.qwonix.test.social.media.api.dto.PostResponse;
 import ru.qwonix.test.social.media.api.facade.FeedFacade;
-import ru.qwonix.test.social.media.api.result.GetFeedEntries;
+import ru.qwonix.test.social.media.api.result.FindFeedEntries;
 
 import java.util.Optional;
 
@@ -53,10 +53,10 @@ public class FeedController {
         log.debug("Get feed by {}", userDetails.getUsername());
         var result = feedFacade.findFeedPaginated(userDetails.getUsername(), page.orElse(0), count.orElse(10));
 
-        if (result instanceof GetFeedEntries.Result.UserNotFound) {
+        if (result instanceof FindFeedEntries.Result.UserNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("user", "user doesn't exist"));
-        } else if (result instanceof GetFeedEntries.Result.Success success) {
+        } else if (result instanceof FindFeedEntries.Result.Success success) {
             return ResponseEntity.ok(success.feed().posts());
         }
 

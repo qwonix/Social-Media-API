@@ -3,14 +3,14 @@ package ru.qwonix.test.social.media.api.result;
 
 import ru.qwonix.test.social.media.api.dto.Feed;
 
-public class GetFeedEntries {
+public class FindFeedEntries {
     public sealed interface Result {
 
-        enum UserNotFound implements GetFeedEntries.Result {
+        enum UserNotFound implements FindFeedEntries.Result {
             INSTANCE
         }
 
-        record Success(Feed feed) implements GetFeedEntries.Result {
+        record Success(Feed feed) implements FindFeedEntries.Result {
         }
     }
 }

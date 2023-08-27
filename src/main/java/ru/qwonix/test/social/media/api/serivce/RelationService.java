@@ -24,11 +24,18 @@ public interface RelationService {
     boolean isSubscriber(UserProfile source, UserProfile target);
 
     /**
+     * Checks if the two specified users are not friends
+     *
+     * @return {@code true} if users are not friends, {@code false} otherwise
+     */
+    boolean areNotFriends(UserProfile user1, UserProfile user2);
+
+    /**
      * Checks if the two specified users are friends
      *
      * @return {@code true} if users are friends, {@code false} otherwise
      */
-    boolean isFriends(UserProfile user1, UserProfile user2);
+    boolean areFriends(UserProfile user1, UserProfile user2);
 
     /**
      * Subscribes the source user to the target user

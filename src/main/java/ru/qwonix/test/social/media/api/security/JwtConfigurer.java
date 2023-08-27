@@ -1,4 +1,4 @@
-package ru.qwonix.test.social.media.api.config;
+package ru.qwonix.test.social.media.api.security;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import ru.qwonix.test.social.media.api.security.TokenAuthenticationConverter;
 import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
 
 @RequiredArgsConstructor

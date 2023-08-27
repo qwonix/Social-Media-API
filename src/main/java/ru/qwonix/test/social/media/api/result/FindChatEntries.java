@@ -5,18 +5,18 @@ import ru.qwonix.test.social.media.api.dto.MessageResponse;
 
 import java.util.List;
 
-public class GetChatEntries {
+public class FindChatEntries {
     public sealed interface Result {
 
-        enum SenderNotFound implements GetChatEntries.Result {
+        enum SenderNotFound implements FindChatEntries.Result {
             INSTANCE
         }
 
-        enum RecipientNotFound implements GetChatEntries.Result {
+        enum RecipientNotFound implements FindChatEntries.Result {
             INSTANCE
         }
 
-        record Success(List<MessageResponse> messages) implements GetChatEntries.Result {
+        record Success(List<MessageResponse> messages) implements FindChatEntries.Result {
         }
     }
 }

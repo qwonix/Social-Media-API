@@ -30,7 +30,12 @@ public class RelationServiceImpl implements RelationService {
     }
 
     @Override
-    public boolean isFriends(UserProfile user1, UserProfile user2) {
+    public boolean areNotFriends(UserProfile user1, UserProfile user2) {
+        return !areFriends(user1, user2);
+    }
+
+    @Override
+    public boolean areFriends(UserProfile user1, UserProfile user2) {
         return relationRepository.existsById(new RelationId(user1, user2, RelationType.SUBSCRIBER)) &&
                relationRepository.existsById(new RelationId(user2, user1, RelationType.SUBSCRIBER));
     }

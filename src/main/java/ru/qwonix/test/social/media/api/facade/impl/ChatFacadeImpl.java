@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.qwonix.test.social.media.api.dto.SendMessageRequest;
 import ru.qwonix.test.social.media.api.facade.ChatFacade;
 import ru.qwonix.test.social.media.api.mapper.MessageMapper;
-import ru.qwonix.test.social.media.api.result.GetChatEntries;
+import ru.qwonix.test.social.media.api.result.FindChatEntries;
 import ru.qwonix.test.social.media.api.result.SendMessageEntries;
 import ru.qwonix.test.social.media.api.serivce.MessageService;
 import ru.qwonix.test.social.media.api.serivce.RelationService;
@@ -33,7 +33,7 @@ public class ChatFacadeImpl implements ChatFacade {
 
         var sender = optionalSender.get();
         var recipient = optionalRecipient.get();
-        if (!relationService.isFriends(sender, recipient)) {
+        if (relationService.areNotFriends(sender, recipient)) {
             return SendMessageEntries.Result.NonFriends.INSTANCE;
         }
         var message = messageMapper.map(sendMessageRequest);
@@ -44,22 +44,23 @@ public class ChatFacadeImpl implements ChatFacade {
     }
 
     @Override
-    public GetChatEntries.Result findChatPaginated(String senderUsername, String recipientUsername, Integer page, Integer count) {
+    public FindChatEntries.Result findChatPaginated(String senderUsername, String recipientUsername, Integer page, Integer count) {
         var optionalSender = userProfileService.findUserByUsername(senderUsername);
         if (optionalSender.isEmpty()) {
-            return GetChatEntries.Result.SenderNotFound.INSTANCE;
+            return FindChatEntries.Result.SenderNotFound.INSTANCE;
         }
         var optionalRecipient = userProfileService.findUserByUsername(recipientUsername);
         if (optionalRecipient.isEmpty()) {
-            return GetChatEntries.Result.RecipientNotFound.INSTANCE;
+            return FindChatEntries.Result.RecipientNotFound.INSTANCE;
         }
 
-        var messageResponseList = messageService.findMessagesPaginatedAndSortedBySendingDateDesc(optionalSender.get(),
+        var messageResponseList = messageService.findMessagesPaginatedAndSortedBySendingDateDesc(
+                        optionalSender.get(),
                         optionalRecipient.get(),
                         page,
                         count)
                 .stream().map(messageMapper::map).toList();
 
-        return new GetChatEntries.Result.Success(messageResponseList);
+        return new FindChatEntries.Result.Success(messageResponseList);
     }
 }

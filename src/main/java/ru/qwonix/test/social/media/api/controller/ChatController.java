@@ -20,7 +20,7 @@ import ru.qwonix.test.social.media.api.dto.ErrorResponse;
 import ru.qwonix.test.social.media.api.dto.MessageResponse;
 import ru.qwonix.test.social.media.api.dto.SendMessageRequest;
 import ru.qwonix.test.social.media.api.facade.ChatFacade;
-import ru.qwonix.test.social.media.api.result.GetChatEntries;
+import ru.qwonix.test.social.media.api.result.FindChatEntries;
 import ru.qwonix.test.social.media.api.result.SendMessageEntries;
 
 import java.util.Optional;
@@ -89,13 +89,13 @@ public class ChatController {
         log.debug("User {} send message to user {}", userDetails.getUsername(), username);
         var result = chatFacade.findChatPaginated(userDetails.getUsername(), username, page.orElse(0), count.orElse(10));
 
-        if (result instanceof GetChatEntries.Result.SenderNotFound) {
+        if (result instanceof FindChatEntries.Result.SenderNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("sender", "user doesn't exist"));
-        } else if (result instanceof GetChatEntries.Result.RecipientNotFound) {
+        } else if (result instanceof FindChatEntries.Result.RecipientNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("recipient", "user doesn't exist"));
-        } else if (result instanceof GetChatEntries.Result.Success success) {
+        } else if (result instanceof FindChatEntries.Result.Success success) {
             return ResponseEntity.ok(success.messages());
         }
 
