@@ -1,10 +1,7 @@
 package ru.qwonix.test.social.media.api.serivce.impl;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import jakarta.annotation.Nonnull;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import ru.qwonix.test.social.media.api.entity.Permission;
@@ -15,24 +12,21 @@ import ru.qwonix.test.social.media.api.serivce.AuthenticationService;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class JwtAuthenticationService implements AuthenticationService {
 
-    private static final String AUTHORITIES_CLAIM = "authorities";
+    private static final String AUTHORITIES_CLAIM_NAME = "authorities";
     private final Key accessJwtKey;
 
     @Setter
     private Duration accessTokenTtl;
 
     /**
-     * @param accessJwtKey secret key used for signing JWT tokens
-     * @param accessTokenTtl  time-to-live duration for access tokens
+     * @param accessJwtKey   secret key used for signing JWT tokens
+     * @param accessTokenTtl time-to-live duration for access tokens
      */
     public JwtAuthenticationService(SecretKey accessJwtKey, Duration accessTokenTtl) {
         this.accessJwtKey = accessJwtKey;
@@ -52,13 +46,13 @@ public class JwtAuthenticationService implements AuthenticationService {
      * @return generated JWT access token
      */
     private String generateAccessToken(String subject, Collection<? extends GrantedAuthority> authorities) {
-        final Instant accessExpirationInstant =
+        final var accessExpirationInstant =
                 LocalDateTime.now().plus(accessTokenTtl).atZone(ZoneId.systemDefault()).toInstant();
         var stringAuthorities = authorities.stream().map(GrantedAuthority::getAuthority).toList();
 
         return Jwts.builder()
                 .setSubject(subject)
-                .claim(AUTHORITIES_CLAIM, stringAuthorities)
+                .claim(AUTHORITIES_CLAIM_NAME, stringAuthorities)
                 .setExpiration(Date.from(accessExpirationInstant))
                 .signWith(accessJwtKey)
                 .compact();
@@ -78,23 +72,55 @@ public class JwtAuthenticationService implements AuthenticationService {
      * @throws TokenValidationException if the token is invalid
      */
     private Token parseToken(String token, Key secret) throws TokenValidationException {
+        var claims = parseAndValidateJwt(token, secret);
+        var authorities = extractAuthoritiesAndCreateToken(claims);
+
+        return new Token(claims.getSubject(), authorities);
+    }
+
+    /**
+     * Extracts authorities from the JWT claims and creates a collection of {@link Permission}
+     *
+     * @param claims The JWT claims containing authority information
+     * @return collection of permissions extracted from the claims
+     * @throws TokenValidationException If there's an issue with the authority claims
+     */
+    private Collection<Permission> extractAuthoritiesAndCreateToken(Claims claims) throws TokenValidationException {
         try {
-            Claims body = Jwts.parserBuilder()
+            var stringAuthorities = claims.get(AUTHORITIES_CLAIM_NAME, List.class);
+            var authorities = new HashSet<Permission>(stringAuthorities.size());
+            for (Object authority : stringAuthorities) {
+                var string = authority.toString();
+                authorities.add(Permission.valueOf(string));
+            }
+            return authorities;
+        } catch (ClassCastException | IllegalArgumentException e) {
+            throw new TokenValidationException("Invalid or missing authorities claim", e);
+        }
+    }
+
+    /**
+     * Parses and validates a JSON Web Token (JWT) using the provided secret key and returns the claims contained in the token
+     *
+     * @param token  JWT token string to be parsed and validated
+     * @param secret secret key used for JWT validation
+     * @return claims extracted from the validated JWT
+     * @throws TokenValidationException if the token is invalid, expired, or the token string is null/empty/whitespace
+     */
+    private static Claims parseAndValidateJwt(String token, Key secret) throws TokenValidationException {
+        try {
+            return Jwts.parserBuilder()
                     .setSigningKey(secret)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
 
-            return new Token(body.getSubject(),
-                    body.get(AUTHORITIES_CLAIM, List.class).stream()
-                            .map(it -> Permission.valueOf(it.toString()))
-                            .toList());
         } catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
-            throw new TokenValidationException("Invalid token");
+            throw new TokenValidationException("Invalid token", e);
         } catch (ExpiredJwtException e) {
-            throw new TokenValidationException("Token expired");
+            throw new TokenValidationException("Token expired", e);
         } catch (IllegalArgumentException e) {
-            throw new TokenValidationException("Token string is null or empty or only whitespace");
+            throw new TokenValidationException("Token string is null or empty or only whitespace", e);
         }
     }
 }
