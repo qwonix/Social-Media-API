@@ -69,6 +69,8 @@ Get the latest version of the application from the [release page](https://github
 ### Prerequisites
 
 Ensure you have Maven, Docker, and Docker Compose installed.
+Exercise caution when initiating the application;
+it employs spring-boot-docker-compose under the hood.
 
 ### Integration Testing
 
