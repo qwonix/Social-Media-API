@@ -1,11 +1,12 @@
 package ru.qwonix.test.social.media.api.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+import java.util.Objects;
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -20,5 +21,18 @@ public class Image {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserProfile user;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Image image = (Image) o;
+        return Objects.equals(imageName, image.imageName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(imageName);
+    }
 
 }
