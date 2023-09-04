@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.qwonix.test.social.media.api.facade.UserProfileFacade;
-import ru.qwonix.test.social.media.api.result.FindFullUserProfileEntries;
-import ru.qwonix.test.social.media.api.result.FindPublicUserProfileEntries;
+import ru.qwonix.test.social.media.api.result.FindFullUserProfile;
+import ru.qwonix.test.social.media.api.result.FindPublicUserProfile;
 
 @Tag(name = "User", description = "User Profile endpoints")
 @SecurityRequirement(name = "Bearer")
@@ -41,22 +41,22 @@ public class UserController {
         log.debug("Get user with username {}", username);
         if (username.equals(userDetails.getUsername())) {
             var result = userProfileFacade.findFullByUsername(username);
-            if (result instanceof FindFullUserProfileEntries.Result.NotFound) {
+            if (result instanceof FindFullUserProfile.Result.NotFound) {
                 log.debug("Error retrieving user, no username {}", username);
                 return ResponseEntity.notFound().build();
 
-            } else if (result instanceof FindFullUserProfileEntries.Result.Success successResult) {
+            } else if (result instanceof FindFullUserProfile.Result.Success successResult) {
                 log.debug("Success user receipt with username {}", username);
                 return ResponseEntity.ok(successResult.userProfileResponse());
             }
 
         } else {
             var result = userProfileFacade.findPublicByUsername(username);
-            if (result instanceof FindPublicUserProfileEntries.Result.NotFound) {
+            if (result instanceof FindPublicUserProfile.Result.NotFound) {
                 log.debug("Error retrieving user, no username {}", username);
                 return ResponseEntity.notFound().build();
 
-            } else if (result instanceof FindPublicUserProfileEntries.Result.Success successResult) {
+            } else if (result instanceof FindPublicUserProfile.Result.Success successResult) {
                 log.debug("Success user receipt with username {}", username);
                 return ResponseEntity.ok(successResult.userProfileResponse());
             }

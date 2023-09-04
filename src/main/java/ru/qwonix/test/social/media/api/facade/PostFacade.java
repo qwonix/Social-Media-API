@@ -9,15 +9,15 @@ import ru.qwonix.test.social.media.api.result.*;
 import java.util.UUID;
 
 public interface PostFacade {
-    CreatePostEntries.Result create(CreatePostRequest createPostRequest, String username);
+    CreatePost.Result create(CreatePostRequest createPostRequest, String username);
 
-    UpdatePostEntries.Result update(UUID id, UpdatePostRequest updatePostRequest);
+    UpdatePost.Result update(UUID id, UpdatePostRequest updatePostRequest);
 
-    DeletePostEntries.Result delete(UUID id);
+    DeletePost.Result delete(UUID id);
 
-    FindPostEntries.Result find(UUID id);
+    FindPost.Result find(UUID id);
 
-    AttachImageToPostEntries.Result attachImage(UUID id, AttachImageRequest imageName);
+    AttachImageToPost.Result attachImage(UUID id, AttachImageRequest imageName);
 
-    DetachImageFromPostEntries.Result detachImage(UUID id, DetachImageRequest imageName);
+    DetachImageFromPost.Result detachImage(UUID id, DetachImageRequest imageName);
 }

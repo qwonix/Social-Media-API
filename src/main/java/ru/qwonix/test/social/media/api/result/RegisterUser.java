@@ -2,7 +2,7 @@ package ru.qwonix.test.social.media.api.result;
 
 import ru.qwonix.test.social.media.api.dto.FullUserProfileResponse;
 
-public record RegisterUserEntries() {
+public record RegisterUser() {
 
     public sealed interface Result {
         enum UsernameAlreadyExists implements Result {

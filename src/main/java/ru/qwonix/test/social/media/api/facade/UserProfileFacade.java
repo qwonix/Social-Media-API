@@ -1,10 +1,10 @@
 package ru.qwonix.test.social.media.api.facade;
 
-import ru.qwonix.test.social.media.api.result.FindFullUserProfileEntries;
-import ru.qwonix.test.social.media.api.result.FindPublicUserProfileEntries;
+import ru.qwonix.test.social.media.api.result.FindFullUserProfile;
+import ru.qwonix.test.social.media.api.result.FindPublicUserProfile;
 
 public interface UserProfileFacade {
-    FindFullUserProfileEntries.Result findFullByUsername(String username);
+    FindFullUserProfile.Result findFullByUsername(String username);
 
-    FindPublicUserProfileEntries.Result findPublicByUsername(String username);
+    FindPublicUserProfile.Result findPublicByUsername(String username);
 }

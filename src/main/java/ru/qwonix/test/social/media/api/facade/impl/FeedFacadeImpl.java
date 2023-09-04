@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.qwonix.test.social.media.api.dto.Feed;
 import ru.qwonix.test.social.media.api.facade.FeedFacade;
 import ru.qwonix.test.social.media.api.mapper.PostMapper;
-import ru.qwonix.test.social.media.api.result.FindFeedEntries;
+import ru.qwonix.test.social.media.api.result.FindFeed;
 import ru.qwonix.test.social.media.api.serivce.PostService;
 import ru.qwonix.test.social.media.api.serivce.RelationService;
 import ru.qwonix.test.social.media.api.serivce.UserProfileService;
@@ -21,10 +21,10 @@ public class FeedFacadeImpl implements FeedFacade {
 
 
     @Override
-    public FindFeedEntries.Result findFeedPaginated(String username, int page, int size) {
+    public FindFeed.Result findFeedPaginated(String username, int page, int size) {
         var optionalUser = userProfileService.findUserByUsername(username);
         if (optionalUser.isEmpty()) {
-            return FindFeedEntries.Result.UserNotFound.INSTANCE;
+            return FindFeed.Result.UserNotFound.INSTANCE;
         }
 
         var userSubscriptions = relationService.findAllSubscriptions(optionalUser.get());
@@ -32,6 +32,6 @@ public class FeedFacadeImpl implements FeedFacade {
                 userSubscriptions,
                 page,
                 size).stream().map(postMapper::map).toList();
-        return new FindFeedEntries.Result.Success(new Feed(userSubscriptionsPosts));
+        return new FindFeed.Result.Success(new Feed(userSubscriptionsPosts));
     }
 }

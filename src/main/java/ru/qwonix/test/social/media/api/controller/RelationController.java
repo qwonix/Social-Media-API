@@ -15,8 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.qwonix.test.social.media.api.dto.ErrorResponse;
 import ru.qwonix.test.social.media.api.facade.RelationFacade;
-import ru.qwonix.test.social.media.api.result.AddFriendEntries;
-import ru.qwonix.test.social.media.api.result.RemoveFriendEntries;
+import ru.qwonix.test.social.media.api.result.AddFriend;
+import ru.qwonix.test.social.media.api.result.RemoveFriend;
 
 @Tag(name = "Relations", description = "Managing relations endpoint")
 @SecurityRequirement(name = "Bearer")
@@ -41,16 +41,16 @@ public class RelationController {
     public ResponseEntity<?> addFriend(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String username) {
         log.debug("User {} send friend request to user {}", userDetails.getUsername(), username);
         var result = relationFacade.addFriend(userDetails.getUsername(), username);
-        if (result instanceof AddFriendEntries.Result.UserNotFound) {
+        if (result instanceof AddFriend.Result.UserNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("username", "user doesn't exist"));
-        } else if (result instanceof AddFriendEntries.Result.RepeatedRequest) {
+        } else if (result instanceof AddFriend.Result.RepeatedRequest) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("username", "request has already been sent"));
-        } else if (result instanceof AddFriendEntries.Result.UsersAreAlreadyFriends) {
+        } else if (result instanceof AddFriend.Result.UsersAreAlreadyFriends) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("username", "users are already friends"));
-        } else if (result instanceof AddFriendEntries.Result.Success) {
+        } else if (result instanceof AddFriend.Result.Success) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
 
@@ -70,13 +70,13 @@ public class RelationController {
     public ResponseEntity<?> removeFriend(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String username) {
         log.debug("User {} send unfriend request to user {}", userDetails.getUsername(), username);
         var result = relationFacade.removeFriend(userDetails.getUsername(), username);
-        if (result instanceof RemoveFriendEntries.Result.UserNotFound) {
+        if (result instanceof RemoveFriend.Result.UserNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("username", "user doesn't exist"));
-        } else if (result instanceof RemoveFriendEntries.Result.UsersAreNotFriends) {
+        } else if (result instanceof RemoveFriend.Result.UsersAreNotFriends) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("username", "users are not friends"));
-        } else if (result instanceof RemoveFriendEntries.Result.Success) {
+        } else if (result instanceof RemoveFriend.Result.Success) {
             return ResponseEntity.ok().build();
         }
 

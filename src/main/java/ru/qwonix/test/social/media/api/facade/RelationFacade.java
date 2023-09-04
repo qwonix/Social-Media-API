@@ -1,10 +1,10 @@
 package ru.qwonix.test.social.media.api.facade;
 
-import ru.qwonix.test.social.media.api.result.AddFriendEntries;
-import ru.qwonix.test.social.media.api.result.RemoveFriendEntries;
+import ru.qwonix.test.social.media.api.result.AddFriend;
+import ru.qwonix.test.social.media.api.result.RemoveFriend;
 
 public interface RelationFacade {
-    AddFriendEntries.Result addFriend(String sourceUsername, String targetUsername);
+    AddFriend.Result addFriend(String sourceUsername, String targetUsername);
 
-    RemoveFriendEntries.Result removeFriend(String sourceUsername, String targetUsername);
+    RemoveFriend.Result removeFriend(String sourceUsername, String targetUsername);
 }

@@ -2,14 +2,14 @@ package ru.qwonix.test.social.media.api.result;
 
 import ru.qwonix.test.social.media.api.dto.PostResponse;
 
-public class UpdatePostEntries {
+public class UpdatePost {
     public sealed interface Result {
 
-        enum NotFound implements UpdatePostEntries.Result {
+        enum NotFound implements UpdatePost.Result {
             INSTANCE
         }
 
-        record Success(PostResponse postResponse) implements UpdatePostEntries.Result {
+        record Success(PostResponse postResponse) implements UpdatePost.Result {
         }
     }
 }

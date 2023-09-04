@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.qwonix.test.social.media.api.dto.*;
 import ru.qwonix.test.social.media.api.facade.AuthenticationFacade;
-import ru.qwonix.test.social.media.api.result.GenerateTokenEntries;
-import ru.qwonix.test.social.media.api.result.RegisterUserEntries;
+import ru.qwonix.test.social.media.api.result.GenerateToken;
+import ru.qwonix.test.social.media.api.result.RegisterUser;
 
 import java.util.List;
 import java.util.Map;
@@ -49,17 +49,17 @@ public class AuthenticationController {
         log.debug("Registration request with username {}", registrationRequest.username());
         var result = authenticationFacade.registerUser(registrationRequest);
 
-        if (result instanceof RegisterUserEntries.Result.UsernameAlreadyExists) {
+        if (result instanceof RegisterUser.Result.UsernameAlreadyExists) {
             log.debug("Registration request fail user already exists {}", registrationRequest.username());
 
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(USERNAME_ALREADY_EXISTS);
-        } else if (result instanceof RegisterUserEntries.Result.EmailAlreadyExists) {
+        } else if (result instanceof RegisterUser.Result.EmailAlreadyExists) {
             log.debug("Registration request fail email already exists {}", registrationRequest.username());
 
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(EMAIL_ALREADY_EXISTS);
-        } else if (result instanceof RegisterUserEntries.Result.Success success) {
+        } else if (result instanceof RegisterUser.Result.Success success) {
             log.debug("Registration request success {}", registrationRequest.username());
 
             return ResponseEntity.created(uriComponentsBuilder
@@ -80,7 +80,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> generateAuthenticationToken(@AuthenticationPrincipal UserDetails user) {
         log.debug("Authentication request with username {}", user.getUsername());
         var result = authenticationFacade.generateAuthenticationToken(user.getUsername());
-        if (result instanceof GenerateTokenEntries.Result.Success success) {
+        if (result instanceof GenerateToken.Result.Success success) {
             log.debug("Authentication request success");
             return ResponseEntity.ok(success.authenticationResponse());
         } else {

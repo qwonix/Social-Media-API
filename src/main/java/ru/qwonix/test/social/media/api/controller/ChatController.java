@@ -20,8 +20,8 @@ import ru.qwonix.test.social.media.api.dto.ErrorResponse;
 import ru.qwonix.test.social.media.api.dto.MessageResponse;
 import ru.qwonix.test.social.media.api.dto.SendMessageRequest;
 import ru.qwonix.test.social.media.api.facade.ChatFacade;
-import ru.qwonix.test.social.media.api.result.FindChatEntries;
-import ru.qwonix.test.social.media.api.result.SendMessageEntries;
+import ru.qwonix.test.social.media.api.result.FindChat;
+import ru.qwonix.test.social.media.api.result.SendMessage;
 
 import java.util.Optional;
 
@@ -53,16 +53,16 @@ public class ChatController {
         log.debug("User {} send message to user {}", userDetails.getUsername(), username);
         var result = chatFacade.sendMessage(userDetails.getUsername(), username, sendMessageRequest);
 
-        if (result instanceof SendMessageEntries.Result.SenderNotFound) {
+        if (result instanceof SendMessage.Result.SenderNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("sender", "user doesn't exist"));
-        } else if (result instanceof SendMessageEntries.Result.RecipientNotFound) {
+        } else if (result instanceof SendMessage.Result.RecipientNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("recipient", "user doesn't exist"));
-        } else if (result instanceof SendMessageEntries.Result.NonFriends) {
+        } else if (result instanceof SendMessage.Result.NonFriends) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("relation", "you have to be a friend to send a message"));
-        } else if (result instanceof SendMessageEntries.Result.Success success) {
+        } else if (result instanceof SendMessage.Result.Success success) {
             return ResponseEntity.ok(success.message());
         }
 
@@ -89,13 +89,13 @@ public class ChatController {
         log.debug("User {} send message to user {}", userDetails.getUsername(), username);
         var result = chatFacade.findChatPaginated(userDetails.getUsername(), username, page.orElse(0), count.orElse(10));
 
-        if (result instanceof FindChatEntries.Result.SenderNotFound) {
+        if (result instanceof FindChat.Result.SenderNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("sender", "user doesn't exist"));
-        } else if (result instanceof FindChatEntries.Result.RecipientNotFound) {
+        } else if (result instanceof FindChat.Result.RecipientNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("recipient", "user doesn't exist"));
-        } else if (result instanceof FindChatEntries.Result.Success success) {
+        } else if (result instanceof FindChat.Result.Success success) {
             return ResponseEntity.ok(success.messages());
         }
 

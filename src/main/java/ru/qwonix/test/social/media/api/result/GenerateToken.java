@@ -2,7 +2,7 @@ package ru.qwonix.test.social.media.api.result;
 
 import ru.qwonix.test.social.media.api.dto.AuthenticationResponse;
 
-public record GenerateTokenEntries() {
+public record GenerateToken() {
 
     public sealed interface Result {
 

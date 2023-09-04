@@ -3,8 +3,8 @@ package ru.qwonix.test.social.media.api.facade.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.qwonix.test.social.media.api.facade.RelationFacade;
-import ru.qwonix.test.social.media.api.result.AddFriendEntries;
-import ru.qwonix.test.social.media.api.result.RemoveFriendEntries;
+import ru.qwonix.test.social.media.api.result.AddFriend;
+import ru.qwonix.test.social.media.api.result.RemoveFriend;
 import ru.qwonix.test.social.media.api.serivce.RelationService;
 import ru.qwonix.test.social.media.api.serivce.UserProfileService;
 
@@ -16,49 +16,49 @@ public class RelationFacadeImpl implements RelationFacade {
     private final UserProfileService userProfileService;
 
     @Override
-    public AddFriendEntries.Result addFriend(String sourceUsername, String targetUsername) {
+    public AddFriend.Result addFriend(String sourceUsername, String targetUsername) {
         var optionalSource = userProfileService.findUserByUsername(sourceUsername);
         if (optionalSource.isEmpty()) {
-            return AddFriendEntries.Result.UserNotFound.INSTANCE;
+            return AddFriend.Result.UserNotFound.INSTANCE;
         }
         var optionalTarget = userProfileService.findUserByUsername(targetUsername);
         if (optionalTarget.isEmpty()) {
-            return AddFriendEntries.Result.UserNotFound.INSTANCE;
+            return AddFriend.Result.UserNotFound.INSTANCE;
         }
         var source = optionalSource.get();
         var target = optionalTarget.get();
 
         if (relationService.areFriends(source, target)) {
-            return AddFriendEntries.Result.UsersAreAlreadyFriends.INSTANCE;
+            return AddFriend.Result.UsersAreAlreadyFriends.INSTANCE;
         }
 
         if (relationService.isSubscriber(source, target)) {
-            return AddFriendEntries.Result.RepeatedRequest.INSTANCE;
+            return AddFriend.Result.RepeatedRequest.INSTANCE;
         }
 
         relationService.subscribe(source, target);
-        return AddFriendEntries.Result.Success.INSTANCE;
+        return AddFriend.Result.Success.INSTANCE;
     }
 
     @Override
-    public RemoveFriendEntries.Result removeFriend(String sourceUsername, String targetUsername) {
+    public RemoveFriend.Result removeFriend(String sourceUsername, String targetUsername) {
         var optionalSource = userProfileService.findUserByUsername(sourceUsername);
         if (optionalSource.isEmpty()) {
-            return RemoveFriendEntries.Result.UserNotFound.INSTANCE;
+            return RemoveFriend.Result.UserNotFound.INSTANCE;
         }
         var optionalTarget = userProfileService.findUserByUsername(targetUsername);
         if (optionalTarget.isEmpty()) {
-            return RemoveFriendEntries.Result.UserNotFound.INSTANCE;
+            return RemoveFriend.Result.UserNotFound.INSTANCE;
         }
 
         var source = optionalSource.get();
         var target = optionalTarget.get();
 
         if (relationService.areNotFriends(source, target)) {
-            return RemoveFriendEntries.Result.UsersAreNotFriends.INSTANCE;
+            return RemoveFriend.Result.UsersAreNotFriends.INSTANCE;
         }
 
         relationService.unsubscribe(source, target);
-        return RemoveFriendEntries.Result.Success.INSTANCE;
+        return RemoveFriend.Result.Success.INSTANCE;
     }
 }

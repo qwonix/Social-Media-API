@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.qwonix.test.social.media.api.dto.ErrorResponse;
 import ru.qwonix.test.social.media.api.facade.ImageFacade;
-import ru.qwonix.test.social.media.api.result.FindImageEntries;
-import ru.qwonix.test.social.media.api.result.UploadImageEntries;
+import ru.qwonix.test.social.media.api.result.FindImage;
+import ru.qwonix.test.social.media.api.result.UploadImage;
 
 import java.util.Map;
 
@@ -41,9 +41,9 @@ public class ImageController {
     public ResponseEntity<?> getByName(@PathVariable String name) {
         var result = imageFacade.findByName(name);
 
-        if (result instanceof FindImageEntries.Result.NotFound) {
+        if (result instanceof FindImage.Result.NotFound) {
             return ResponseEntity.notFound().build();
-        } else if (result instanceof FindImageEntries.Result.Success success) {
+        } else if (result instanceof FindImage.Result.Success success) {
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.IMAGE_PNG)
                     .body(success.imageResourceResponse().resource());
@@ -64,11 +64,11 @@ public class ImageController {
                                             @RequestPart("image") MultipartFile image) {
         var result = imageFacade.upload(image, userDetails.getUsername());
 
-        if (result instanceof UploadImageEntries.Result.UserNotFound) {
+        if (result instanceof UploadImage.Result.UserNotFound) {
             return ResponseEntity.badRequest().build();
-        } else if (result instanceof UploadImageEntries.Result.FileIsNotImage) {
+        } else if (result instanceof UploadImage.Result.FileIsNotImage) {
             return ResponseEntity.badRequest().body(new ErrorResponse("image", "not a image"));
-        } else if (result instanceof UploadImageEntries.Result.Success success) {
+        } else if (result instanceof UploadImage.Result.Success success) {
             return ResponseEntity.created(
                     uriComponentsBuilder.path("/api/v1/image/{name}")
                             .build(Map.of("name", success.imageResponse().imageName()))

@@ -1,11 +1,11 @@
 package ru.qwonix.test.social.media.api.facade;
 
 import ru.qwonix.test.social.media.api.dto.UserRegistrationRequest;
-import ru.qwonix.test.social.media.api.result.GenerateTokenEntries;
-import ru.qwonix.test.social.media.api.result.RegisterUserEntries;
+import ru.qwonix.test.social.media.api.result.GenerateToken;
+import ru.qwonix.test.social.media.api.result.RegisterUser;
 
 public interface AuthenticationFacade {
-    RegisterUserEntries.Result registerUser(UserRegistrationRequest registrationRequest);
+    RegisterUser.Result registerUser(UserRegistrationRequest registrationRequest);
 
-    GenerateTokenEntries.Result generateAuthenticationToken(String username);
+    GenerateToken.Result generateAuthenticationToken(String username);
 }

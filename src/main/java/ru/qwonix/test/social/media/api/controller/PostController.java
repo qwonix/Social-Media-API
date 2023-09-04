@@ -44,9 +44,9 @@ public class PostController {
     public ResponseEntity<PostResponse> getById(@PathVariable("id") UUID id) {
         log.debug("Get post with id {}", id);
         var result = postFacade.find(id);
-        if (result instanceof FindPostEntries.Result.NotFound) {
+        if (result instanceof FindPost.Result.NotFound) {
             return ResponseEntity.notFound().build();
-        } else if (result instanceof FindPostEntries.Result.Success success) {
+        } else if (result instanceof FindPost.Result.Success success) {
             return ResponseEntity.ok(success.postResponse());
         }
 
@@ -64,7 +64,7 @@ public class PostController {
                                                       @RequestBody @Valid CreatePostRequest createPostRequest) {
         log.debug("Post creation request title {}", createPostRequest.title());
         var result = postFacade.create(createPostRequest, userDetails.getUsername());
-        if (result instanceof CreatePostEntries.Result.Success success) {
+        if (result instanceof CreatePost.Result.Success success) {
             return ResponseEntity.created(uriComponentsBuilder
                             .path("/api/v1/post/{postId}")
                             .build(Map.of("postId", success.postResponse().id())))
@@ -87,9 +87,9 @@ public class PostController {
                                                    @RequestBody @Valid UpdatePostRequest updatePostRequest) {
         log.debug("Post update request id {}", id);
         var result = postFacade.update(id, updatePostRequest);
-        if (result instanceof UpdatePostEntries.Result.NotFound) {
+        if (result instanceof UpdatePost.Result.NotFound) {
             return ResponseEntity.notFound().build();
-        } else if (result instanceof UpdatePostEntries.Result.Success success) {
+        } else if (result instanceof UpdatePost.Result.Success success) {
             return ResponseEntity.ok(success.postResponse());
         }
         return ResponseEntity.internalServerError().build();
@@ -108,9 +108,9 @@ public class PostController {
     public ResponseEntity<?> deleteById(@PathVariable("id") UUID id) {
         log.debug("Post delete request id {}", id);
         var result = postFacade.delete(id);
-        if (result instanceof DeletePostEntries.Result.NotFound) {
+        if (result instanceof DeletePost.Result.NotFound) {
             return ResponseEntity.notFound().build();
-        } else if (result instanceof DeletePostEntries.Result.Success) {
+        } else if (result instanceof DeletePost.Result.Success) {
             return ResponseEntity.ok().build();
         }
 
@@ -139,17 +139,17 @@ public class PostController {
                                          @RequestBody AttachImageRequest attachedImage) {
         log.debug("Attach image {} to post {}", id, attachedImage.imageName());
         var result = postFacade.attachImage(id, attachedImage);
-        if (result instanceof AttachImageToPostEntries.Result.PostNotFound) {
+        if (result instanceof AttachImageToPost.Result.PostNotFound) {
             return ResponseEntity.notFound().build();
-        } else if (result instanceof AttachImageToPostEntries.Result.ImageNotFound) {
+        } else if (result instanceof AttachImageToPost.Result.ImageNotFound) {
             return ResponseEntity.badRequest().body(
                     new ErrorResponse("imageName", "image does not exist. In order to attach an image, you need to upload it")
             );
-        } else if (result instanceof AttachImageToPostEntries.Result.ImageAlreadyAttached) {
+        } else if (result instanceof AttachImageToPost.Result.ImageAlreadyAttached) {
             return ResponseEntity.badRequest().body(
                     new ErrorResponse("imageName", "the image has already been attached to the post")
             );
-        } else if (result instanceof AttachImageToPostEntries.Result.Success success) {
+        } else if (result instanceof AttachImageToPost.Result.Success success) {
             return ResponseEntity.created(uriComponentsBuilder
                             .path("/api/v1/post/{postId}")
                             .build(Map.of("postId", success.postResponse().id())))
@@ -178,17 +178,17 @@ public class PostController {
     public ResponseEntity<?> detachImage(@PathVariable("id") UUID id, @RequestBody DetachImageRequest detachedImage) {
         log.debug("Detach image {} to post {}", id, detachedImage.imageName());
         var result = postFacade.detachImage(id, detachedImage);
-        if (result instanceof DetachImageFromPostEntries.Result.PostNotFound) {
+        if (result instanceof DetachImageFromPost.Result.PostNotFound) {
             return ResponseEntity.notFound().build();
-        } else if (result instanceof DetachImageFromPostEntries.Result.ImageNotFound) {
+        } else if (result instanceof DetachImageFromPost.Result.ImageNotFound) {
             return ResponseEntity.badRequest().body(
                     new ErrorResponse("imageName", "image does not exist. In order to detach an image, you need to upload and attach it")
             );
-        } else if (result instanceof DetachImageFromPostEntries.Result.ImageNotAttached) {
+        } else if (result instanceof DetachImageFromPost.Result.ImageNotAttached) {
             return ResponseEntity.badRequest().body(
                     new ErrorResponse("imageName", "the image is not attached to the post")
             );
-        } else if (result instanceof DetachImageFromPostEntries.Result.Success success) {
+        } else if (result instanceof DetachImageFromPost.Result.Success success) {
             return ResponseEntity.ok(success.postResponse());
         }
 

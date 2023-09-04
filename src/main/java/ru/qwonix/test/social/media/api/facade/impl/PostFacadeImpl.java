@@ -26,24 +26,24 @@ public class PostFacadeImpl implements PostFacade {
 
 
     @Override
-    public CreatePostEntries.Result create(CreatePostRequest createPostRequest, String username) {
+    public CreatePost.Result create(CreatePostRequest createPostRequest, String username) {
         var optionalUser = userProfileService.findUserByUsername(username);
         if (optionalUser.isEmpty()) {
-            return CreatePostEntries.Result.PostOwnerNotFound.INSTANCE;
+            return CreatePost.Result.PostOwnerNotFound.INSTANCE;
         }
         var post = postMapper.map(createPostRequest);
         post.setUser(optionalUser.get());
 
         var servicePost = postService.createPost(post);
-        return new CreatePostEntries.Result.Success(postMapper.map(servicePost));
+        return new CreatePost.Result.Success(postMapper.map(servicePost));
 
     }
 
     @Override
-    public UpdatePostEntries.Result update(UUID id, UpdatePostRequest updatePostRequest) {
+    public UpdatePost.Result update(UUID id, UpdatePostRequest updatePostRequest) {
         var optionalPost = postService.findById(id);
         if (optionalPost.isEmpty()) {
-            return UpdatePostEntries.Result.NotFound.INSTANCE;
+            return UpdatePost.Result.NotFound.INSTANCE;
         }
 
         var post = optionalPost.get();
@@ -56,71 +56,71 @@ public class PostFacadeImpl implements PostFacade {
 
         var updatedPost = postService.updatePost(post);
 
-        return new UpdatePostEntries.Result.Success(postMapper.map(updatedPost));
+        return new UpdatePost.Result.Success(postMapper.map(updatedPost));
     }
 
     @Override
-    public DeletePostEntries.Result delete(UUID id) {
+    public DeletePost.Result delete(UUID id) {
         if (!postService.existsById(id)) {
-            return DeletePostEntries.Result.NotFound.INSTANCE;
+            return DeletePost.Result.NotFound.INSTANCE;
         }
         postService.delete(id);
 
-        return DeletePostEntries.Result.Success.INSTANCE;
+        return DeletePost.Result.Success.INSTANCE;
     }
 
     @Override
-    public FindPostEntries.Result find(UUID id) {
+    public FindPost.Result find(UUID id) {
         var optionalPost = postService.findById(id);
 
         if (optionalPost.isEmpty()) {
-            return FindPostEntries.Result.NotFound.INSTANCE;
+            return FindPost.Result.NotFound.INSTANCE;
         }
         var post = optionalPost.get();
-        return new FindPostEntries.Result.Success(postMapper.map(post));
+        return new FindPost.Result.Success(postMapper.map(post));
     }
 
     @Override
-    public AttachImageToPostEntries.Result attachImage(UUID id, AttachImageRequest attachImageRequest) {
+    public AttachImageToPost.Result attachImage(UUID id, AttachImageRequest attachImageRequest) {
         var optionalPost = postService.findById(id);
         if (optionalPost.isEmpty()) {
-            return AttachImageToPostEntries.Result.PostNotFound.INSTANCE;
+            return AttachImageToPost.Result.PostNotFound.INSTANCE;
         }
         var optionalImage = imageService.findByName(attachImageRequest.imageName());
         if (optionalImage.isEmpty()) {
-            return AttachImageToPostEntries.Result.ImageNotFound.INSTANCE;
+            return AttachImageToPost.Result.ImageNotFound.INSTANCE;
         }
 
         var post = optionalPost.get();
         var image = optionalImage.get();
         if (post.getImages().contains(image)) {
-            return AttachImageToPostEntries.Result.ImageAlreadyAttached.INSTANCE;
+            return AttachImageToPost.Result.ImageAlreadyAttached.INSTANCE;
         }
 
         post.getImages().add(image);
         var updatedPost = postService.updatePost(post);
-        return new AttachImageToPostEntries.Result.Success(postMapper.map(updatedPost));
+        return new AttachImageToPost.Result.Success(postMapper.map(updatedPost));
     }
 
     @Override
-    public DetachImageFromPostEntries.Result detachImage(UUID id, DetachImageRequest detachImageRequest) {
+    public DetachImageFromPost.Result detachImage(UUID id, DetachImageRequest detachImageRequest) {
         var optionalPost = postService.findById(id);
         if (optionalPost.isEmpty()) {
-            return DetachImageFromPostEntries.Result.PostNotFound.INSTANCE;
+            return DetachImageFromPost.Result.PostNotFound.INSTANCE;
         }
         var optionalImage = imageService.findByName(detachImageRequest.imageName());
         if (optionalImage.isEmpty()) {
-            return DetachImageFromPostEntries.Result.ImageNotFound.INSTANCE;
+            return DetachImageFromPost.Result.ImageNotFound.INSTANCE;
         }
 
         var post = optionalPost.get();
         var image = optionalImage.get();
         if (!post.getImages().contains(image)) {
-            return DetachImageFromPostEntries.Result.ImageNotAttached.INSTANCE;
+            return DetachImageFromPost.Result.ImageNotAttached.INSTANCE;
         }
 
         post.getImages().remove(image);
         var updatedPost = postService.updatePost(post);
-        return new DetachImageFromPostEntries.Result.Success(postMapper.map(updatedPost));
+        return new DetachImageFromPost.Result.Success(postMapper.map(updatedPost));
     }
 }
