@@ -38,6 +38,16 @@ class AuthenticationControllerIT {
     }
 
     @Test
+    void handleGenerateAuthenticationToken_WrongPassword_ReturnsValidErrorResponse() throws Exception {
+        var requestBuilder = get("/api/v1/auth")
+                .with(httpBasic("user1", "password2"));
+
+        mockMvc.perform(requestBuilder).andExpectAll(
+                status().isUnauthorized()
+        );
+    }
+
+    @Test
     void handleRegisterNewUser_ReturnsSuccess() throws Exception {
         var requestBuilder = post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
