@@ -1,7 +1,4 @@
 # Social Media RESTful API
-
-[![Project Status](https://img.shields.io/badge/swagger-AVAILABLE_TEST_SERVER-salad.svg?style=for-the-badge)](http://212.57.126.49/swagger-ui/index.html)
-
 ## Introduction
 
 Welcome to the Social Media RESTful API project! This API is designed as a test case for a social network, providing
